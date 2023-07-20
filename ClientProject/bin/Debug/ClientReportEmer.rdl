@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="ClientEmerData">
+      <DataSourceReference>ClientShareDatasource</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>7e5a81bc-b946-4710-901b-760d9cca7b87</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="ClientEmerDataset">
+      <Query>
+        <DataSourceName>ClientEmerData</DataSourceName>
+        <CommandText>		SELECT 
+		SP.StudentPersonalId
+		,SP.SchoolId
+		,SP.LastName+','+SP.FirstName AS studentPersonalName 		
+		,CONVERT(VARCHAR(10), SP.[BirthDate], 101) AS BirthDate	
+		,DATEDIFF(YEAR,SP.BirthDate,GETDATE()) - (CASE WHEN DATEADD(YY,DATEDIFF(YEAR,SP.BirthDate,GETDATE()),SP.BirthDate) &gt;  GETDATE() THEN 1 ELSE 0 END) AS Age
+		,CASE WHEN DATEPART(MM,SP.BirthDate)&gt;= 01 AND DATEPART(MM,SP.BirthDate)&lt;= 03 THEN 1 ELSE 
+		CASE WHEN DATEPART(MM,SP.BirthDate)&gt;= 04 AND DATEPART(MM,SP.BirthDate)&lt;= 06 THEN 2 ELSE
+		CASE WHEN DATEPART(MM,SP.BirthDate)&gt;= 07 AND DATEPART(MM,SP.BirthDate)&lt;= 09 THEN 3 ELSE 4 END END END AS mMonth
+		,CASE WHEN SP.Gender=1 THEN 'Male'	ELSE 'Female'	END Gender
+		,EMERGENCYCONT.LastName+','+EMERGENCYCONT.FirstName AS EmergencyContactName
+		,EMERGENCYCONT.Phone AS EmergencyContactPhone
+		,EMERGENCYCONT.Mobile AS EmergencyContactMobile
+		FROM StudentPersonal SP
+		LEFT JOIN
+		(SELECT CP.ContactPersonalId,CP.LastName,CP.FirstName,CP.StudentPersonalId,AL.Phone,AL.Mobile,AL.OtherPhone  FROM
+		  [dbo].[ContactPersonal] CP 
+		INNER JOIN [dbo].[StudentContactRelationship] SCR ON CP.ContactPersonalId=SCR.ContactPersonalId
+		INNER JOIN LookUp LP ON LP.LookupId=SCR.RelationshipId
+		INNER JOIN [dbo].[StudentAddresRel] SAR ON SAR.ContactPersonalId=CP.ContactPersonalId
+		INNER JOIN [dbo].[AddressList] AL ON AL.AddressId=SAR.AddressId 
+		WHERE LP.LookupName='Emergency Contact' AND SAR.ContactSequence=1 AND CP.Status=1) EMERGENCYCONT ON SP.StudentPersonalId=EMERGENCYCONT.StudentPersonalId
+		 WHERE SP.StudentType='Client' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
+									FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
+									WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
+									ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId
+									WHERE (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client')
+          and ST.StudentPersonalId not in (SELECT Distinct
+          ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,SP.ClientId)&gt;0
+
+		 UNION
+
+(SELECT SP.StudentPersonalId,SP.SchoolId,SP.LastName + ',' + SP.FirstName AS studentPersonalName,CONVERT(VARCHAR(10), SP.BirthDate, 101) AS BirthDate,
+DATEDIFF(YEAR,SP.BirthDate,GETDATE()) - (CASE WHEN DATEADD(YY,DATEDIFF(YEAR,SP.BirthDate,GETDATE()),SP.BirthDate) &gt;  GETDATE() THEN 1 ELSE 0 END) AS Age,
+CASE WHEN DATEPART(MM,SP.BirthDate)&gt;= 01 AND DATEPART(MM,SP.BirthDate)&lt;= 03 THEN 1 ELSE 
+		CASE WHEN DATEPART(MM,SP.BirthDate)&gt;= 04 AND DATEPART(MM,SP.BirthDate)&lt;= 06 THEN 2 ELSE
+		CASE WHEN DATEPART(MM,SP.BirthDate)&gt;= 07 AND DATEPART(MM,SP.BirthDate)&lt;= 09 THEN 3 ELSE 4 END END END AS mMonth,CASE WHEN SP.Gender = '1' THEN 'Male' ELSE 'Female' END AS Gender,
+ CP.LastName + ',' + CP.FirstName AS EmergencyContactName,AL.Phone AS EmergencyContactPhone,AL.Mobile EmergencyContactMobile 
+ FROM StudentPersonal SP
+INNER JOIN  ContactPersonal AS CP ON SP.StudentPersonalId = CP.StudentPersonalId
+INNER JOIN [dbo].[StudentContactRelationship] SCR ON CP.ContactPersonalId=SCR.ContactPersonalId		
+		INNER JOIN [dbo].[StudentAddresRel] SAR ON SAR.ContactPersonalId=CP.ContactPersonalId
+		INNER JOIN [dbo].[AddressList] AL ON AL.AddressId=SAR.AddressId 
+    WHERE (SP.StudentType = 'Client') 
+    and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
+									FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
+									WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
+									ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId
+									WHERE (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client')
+          and ST.StudentPersonalId not in (SELECT Distinct
+          ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client'))
+          AND CONVERT(INT,SP.ClientId)&gt;0 AND CP.IsEmergency='true' AND CP.Status=1)
+
+		</CommandText>
+        <Timeout>12</Timeout>
+      </Query>
+      <Fields>
+        <Field Name="StudentPersonalId">
+          <DataField>StudentPersonalId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="studentPersonalName">
+          <DataField>studentPersonalName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="SchoolId">
+          <DataField>SchoolId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="BirthDate">
+          <DataField>BirthDate</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Age">
+          <DataField>Age</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="mMonth">
+          <DataField>mMonth</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Gender">
+          <DataField>Gender</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="EmergencyContactName">
+          <DataField>EmergencyContactName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="EmergencyContactPhone">
+          <DataField>EmergencyContactPhone</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="EmergencyContactMobile">
+          <DataField>EmergencyContactMobile</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <Filters>
+        <Filter>
+          <FilterExpression>=Fields!SchoolId.Value</FilterExpression>
+          <Operator>Equal</Operator>
+          <FilterValues>
+            <FilterValue>=Parameters!SchoolID.Value</FilterValue>
+          </FilterValues>
+        </Filter>
+      </Filters>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Tablix Name="Tablix5">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>9.52563cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.5cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.5cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>4.66958cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>2.5cm</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.6cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox124">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Client Name</Value>
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox124</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>MidnightBlue</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox144">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Birth Date</Value>
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox144</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>MidnightBlue</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox146">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Age</Value>
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox146</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>MidnightBlue</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Tablix Name="Tablix6">
+                          <TablixBody>
+                            <TablixColumns>
+                              <TablixColumn>
+                                <Width>3.58479cm</Width>
+                              </TablixColumn>
+                              <TablixColumn>
+                                <Width>3.58479cm</Width>
+                              </TablixColumn>
+                            </TablixColumns>
+                            <TablixRows>
+                              <TablixRow>
+                                <Height>0.3cm</Height>
+                                <TablixCells>
+                                  <TablixCell>
+                                    <CellContents>
+                                      <Textbox Name="Textbox130">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value>Emergency Contact</Value>
+                                                <Style>
+                                                  <FontWeight>Bold</FontWeight>
+                                                  <Color>White</Color>
+                                                </Style>
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style>
+                                              <TextAlign>Center</TextAlign>
+                                            </Style>
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>Textbox130</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>Solid</Style>
+                                          </Border>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                      <ColSpan>2</ColSpan>
+                                    </CellContents>
+                                  </TablixCell>
+                                  <TablixCell />
+                                </TablixCells>
+                              </TablixRow>
+                              <TablixRow>
+                                <Height>0.3cm</Height>
+                                <TablixCells>
+                                  <TablixCell>
+                                    <CellContents>
+                                      <Textbox Name="Textbox142">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value>Contact Name</Value>
+                                                <Style>
+                                                  <FontWeight>Bold</FontWeight>
+                                                  <Color>White</Color>
+                                                </Style>
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style>
+                                              <TextAlign>Center</TextAlign>
+                                            </Style>
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>Textbox142</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>Solid</Style>
+                                          </Border>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixCell>
+                                  <TablixCell>
+                                    <CellContents>
+                                      <Textbox Name="Textbox143">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value>Phone</Value>
+                                                <Style>
+                                                  <FontWeight>Bold</FontWeight>
+                                                  <Color>White</Color>
+                                                </Style>
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style>
+                                              <TextAlign>Center</TextAlign>
+                                            </Style>
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>Textbox143</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>Solid</Style>
+                                          </Border>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixCell>
+                                </TablixCells>
+                              </TablixRow>
+                            </TablixRows>
+                          </TablixBody>
+                          <TablixColumnHierarchy>
+                            <TablixMembers>
+                              <TablixMember />
+                              <TablixMember />
+                            </TablixMembers>
+                          </TablixColumnHierarchy>
+                          <TablixRowHierarchy>
+                            <TablixMembers>
+                              <TablixMember />
+                              <TablixMember />
+                            </TablixMembers>
+                          </TablixRowHierarchy>
+                          <DataSetName>ClientEmerDataset</DataSetName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <BackgroundColor>MidnightBlue</BackgroundColor>
+                          </Style>
+                        </Tablix>
+                        <ColSpan>2</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.6cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="studentPersonalName1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!studentPersonalName.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>studentPersonalName1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="BirthDate1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!BirthDate.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>BirthDate1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Age">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Age.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Age</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Tablix Name="Tablix7">
+                          <TablixBody>
+                            <TablixColumns>
+                              <TablixColumn>
+                                <Width>3.58479cm</Width>
+                              </TablixColumn>
+                              <TablixColumn>
+                                <Width>3.58479cm</Width>
+                              </TablixColumn>
+                            </TablixColumns>
+                            <TablixRows>
+                              <TablixRow>
+                                <Height>0.6cm</Height>
+                                <TablixCells>
+                                  <TablixCell>
+                                    <CellContents>
+                                      <Textbox Name="EmergencyContactName">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value>=Fields!EmergencyContactName.Value</Value>
+                                                <Style />
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style />
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>EmergencyContactName</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>None</Style>
+                                          </Border>
+                                          <BottomBorder>
+                                            <Color>LightGrey</Color>
+                                            <Style>Solid</Style>
+                                          </BottomBorder>
+                                          <RightBorder>
+                                            <Color>LightGrey</Color>
+                                            <Style>Solid</Style>
+                                          </RightBorder>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixCell>
+                                  <TablixCell>
+                                    <CellContents>
+                                      <Textbox Name="EmergencyContactPhone">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value>=Fields!EmergencyContactPhone.Value</Value>
+                                                <Style />
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style />
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>EmergencyContactPhone</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>None</Style>
+                                          </Border>
+                                          <BottomBorder>
+                                            <Color>LightGrey</Color>
+                                            <Style>Solid</Style>
+                                          </BottomBorder>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixCell>
+                                </TablixCells>
+                              </TablixRow>
+                            </TablixRows>
+                          </TablixBody>
+                          <TablixColumnHierarchy>
+                            <TablixMembers>
+                              <TablixMember />
+                              <TablixMember />
+                            </TablixMembers>
+                          </TablixColumnHierarchy>
+                          <TablixRowHierarchy>
+                            <TablixMembers>
+                              <TablixMember>
+                                <Group Name="Details4">
+                                  <GroupExpressions>
+                                    <GroupExpression>=Fields!StudentPersonalId.Value</GroupExpression>
+                                    <GroupExpression>=Fields!EmergencyContactName.Value</GroupExpression>
+                                    <GroupExpression>=Fields!EmergencyContactPhone.Value</GroupExpression>
+                                  </GroupExpressions>
+                                </Group>
+                                <Visibility>
+                                  <Hidden>=Iif(IsNothing(Fields!EmergencyContactName.Value),True,False)</Hidden>
+                                </Visibility>
+                              </TablixMember>
+                            </TablixMembers>
+                          </TablixRowHierarchy>
+                          <DataSetName>ClientEmerDataset</DataSetName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                          </Style>
+                        </Tablix>
+                        <ColSpan>2</ColSpan>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                  <RepeatOnNewPage>true</RepeatOnNewPage>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="Details3">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!StudentPersonalId.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!studentPersonalName.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <RepeatColumnHeaders>true</RepeatColumnHeaders>
+            <RepeatRowHeaders>true</RepeatRowHeaders>
+            <FixedColumnHeaders>true</FixedColumnHeaders>
+            <FixedRowHeaders>true</FixedRowHeaders>
+            <NoRowsMessage>No Data Available</NoRowsMessage>
+            <DataSetName>ClientEmerDataset</DataSetName>
+            <Top>0.49057cm</Top>
+            <Left>0.4737cm</Left>
+            <Height>1.2cm</Height>
+            <Width>21.69521cm</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
+        </ReportItems>
+        <Height>0.84619in</Height>
+        <Style />
+      </Body>
+      <Width>8.905in</Width>
+      <Page>
+        <PageHeight>21cm</PageHeight>
+        <PageWidth>29.7cm</PageWidth>
+        <LeftMargin>0.5cm</LeftMargin>
+        <RightMargin>0.5cm</RightMargin>
+        <TopMargin>0.5cm</TopMargin>
+        <BottomMargin>0.5cm</BottomMargin>
+        <ColumnSpacing>0.13cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="SchoolID">
+      <DataType>Integer</DataType>
+      <Prompt>SchoolID</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>7e91a811-da94-498e-9dfa-fa87b8e91db0</rd:ReportID>
+</Report>

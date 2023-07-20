@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2005/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSources>
+    <DataSource Name="ReferralShareDataSource">
+      <rd:DataSourceID>64f34fcb-a6ec-4b7d-bf00-486e7e380bf5</rd:DataSourceID>
+      <DataSourceReference>ReferralShareDataSource</DataSourceReference>
+    </DataSource>
+  </DataSources>
+  <rd:ReportID>fb034979-79b9-4300-8f20-65269fbe4be3</rd:ReportID>
+  <Width>5in</Width>
+  <Body>
+    <Height>0.79in</Height>
+    <ColumnSpacing>0.5in</ColumnSpacing>
+    <ReportItems>
+      <Textbox Name="textbox1">
+        <Style>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>20pt</FontSize>
+          <Color>SteelBlue</Color>
+          <FontWeight>Bold</FontWeight>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <rd:DefaultName>textbox1</rd:DefaultName>
+        <Value>Report1</Value>
+        <CanGrow>true</CanGrow>
+        <Height>0.36in</Height>
+      </Textbox>
+      <Table Name="table1">
+        <Top>0.36in</Top>
+        <Style />
+        <Header>
+          <RepeatOnNewPage>true</RepeatOnNewPage>
+          <TableRows>
+            <TableRow>
+              <TableCells>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox2">
+                      <Style>
+                        <BackgroundColor>SteelBlue</BackgroundColor>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>11pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                        <Color>White</Color>
+                        <BorderStyle>
+                          <Default>Solid</Default>
+                        </BorderStyle>
+                        <BorderColor>
+                          <Default>LightGrey</Default>
+                        </BorderColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <rd:DefaultName>textbox2</rd:DefaultName>
+                      <Value>School Name</Value>
+                      <CanGrow>true</CanGrow>
+                      <Height>0.22in</Height>
+                      <Width>1in</Width>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox3">
+                      <Style>
+                        <BackgroundColor>SteelBlue</BackgroundColor>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>11pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                        <Color>White</Color>
+                        <BorderStyle>
+                          <Default>Solid</Default>
+                        </BorderStyle>
+                        <BorderColor>
+                          <Default>LightGrey</Default>
+                        </BorderColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <rd:DefaultName>textbox3</rd:DefaultName>
+                      <Value>Dist Contact</Value>
+                      <CanGrow>true</CanGrow>
+                      <Height>0.22in</Height>
+                      <Width>1in</Width>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+              </TableCells>
+              <Height>0.22in</Height>
+            </TableRow>
+          </TableRows>
+        </Header>
+        <Details>
+          <TableRows>
+            <TableRow>
+              <TableCells>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="SchoolName">
+                      <Style>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>10pt</FontSize>
+                        <BorderStyle>
+                          <Default>Solid</Default>
+                        </BorderStyle>
+                        <BorderColor>
+                          <Default>LightGrey</Default>
+                        </BorderColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <rd:DefaultName>SchoolName</rd:DefaultName>
+                      <Value>=Fields!SchoolName.Value</Value>
+                      <CanGrow>true</CanGrow>
+                      <Height>0.21in</Height>
+                      <Width>1in</Width>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="DistContact">
+                      <Style>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>10pt</FontSize>
+                        <BorderStyle>
+                          <Default>Solid</Default>
+                        </BorderStyle>
+                        <BorderColor>
+                          <Default>LightGrey</Default>
+                        </BorderColor>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <rd:DefaultName>DistContact</rd:DefaultName>
+                      <Value>=Fields!DistContact.Value</Value>
+                      <CanGrow>true</CanGrow>
+                      <Height>0.21in</Height>
+                      <Width>1in</Width>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+              </TableCells>
+              <Height>0.21in</Height>
+            </TableRow>
+          </TableRows>
+        </Details>
+        <TableColumns>
+          <TableColumn>
+            <Width>1in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>1in</Width>
+          </TableColumn>
+        </TableColumns>
+        <DataSetName>DataSet1</DataSetName>
+      </Table>
+    </ReportItems>
+  </Body>
+  <Language>en-US</Language>
+  <LeftMargin>1in</LeftMargin>
+  <RightMargin>1in</RightMargin>
+  <TopMargin>1in</TopMargin>
+  <BottomMargin>1in</BottomMargin>
+  <PageWidth>8.5in</PageWidth>
+  <PageHeight>11in</PageHeight>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Fields>
+        <Field Name="SchoolId">
+          <DataField>SchoolId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="SchoolName">
+          <DataField>SchoolName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="SchoolDesc">
+          <DataField>SchoolDesc</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="AddressId">
+          <DataField>AddressId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="DistrictName">
+          <DataField>DistrictName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="DistAddrId">
+          <DataField>DistAddrId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="DistContact">
+          <DataField>DistContact</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="DistPhone">
+          <DataField>DistPhone</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ActiveInd">
+          <DataField>ActiveInd</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CreatedBy">
+          <DataField>CreatedBy</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CreatedOn">
+          <DataField>CreatedOn</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="ModifiedBy">
+          <DataField>ModifiedBy</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ModifiedOn">
+          <DataField>ModifiedOn</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>ReferralShareDataSource</DataSourceName>
+        <CommandType>Text</CommandType>
+        <CommandText>SELECT        School.*
+FROM            School</CommandText>
+        <Timeout>0</Timeout>
+      </Query>
+    </DataSet>
+  </DataSets>
+</Report>

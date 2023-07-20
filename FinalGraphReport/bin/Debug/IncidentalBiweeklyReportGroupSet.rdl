@@ -1,0 +1,1687 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="DSAggScore">
+      <DataSourceReference>AppDataP2Source</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>601333d1-d204-4270-bf2a-761c9faf5750</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DSAggScoreSet">
+      <Query>
+        <DataSourceName>DSAggScore</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@StartDate">
+            <Value>=Parameters!SDate.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@ENDDate">
+            <Value>=Parameters!EDate.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Studentid">
+            <Value>=Parameters!StudentId.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@SchoolId">
+            <Value>=Parameters!SchoolId.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@LessonPlanid">
+            <Value>=Parameters!AllLesson.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Trendtype">
+            <Value>=Parameters!Trendtype.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Event">
+            <Value>=Parameters!Events.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@SetIds">
+            <Value>=Parameters!SetId.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@DsTempSetColCalcIds">
+            <Value>=Parameters!DsTempSetColCalcId.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@IsMaintanance">
+            <Value>=Parameters!IsMaintanance.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@LPStatus">
+            <Value>=Parameters!LPStatus.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@ClsType">
+            <Value>=Parameters!ClsType.Value</Value>
+            <rd:UserDefined>true</rd:UserDefined>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>BiweeklyReport_Trendline_Set</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Scoreid">
+          <DataField>Scoreid</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="LessonPlanId">
+          <DataField>LessonPlanId</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="CalcType">
+          <DataField>CalcType</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Score">
+          <DataField>Score</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="AggredatedDate">
+          <DataField>AggredatedDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="BreakTrendNo">
+          <DataField>BreakTrendNo</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="LessonPlanName">
+          <DataField>LessonPlanName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="StudentFname">
+          <DataField>StudentFname</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="XValue">
+          <DataField>XValue</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="ArrowNote">
+          <DataField>ArrowNote</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Trend">
+          <DataField>Trend</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="StudentLname">
+          <DataField>StudentLname</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="EventType">
+          <DataField>EventType</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="IOAPerc">
+          <DataField>IOAPerc</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="EventName">
+          <DataField>EventName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ClassType">
+          <DataField>ClassType</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="EvntTs">
+          <DataField>EvntTs</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="EndTime">
+          <DataField>EndTime</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Comment">
+          <DataField>Comment</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="RptLabel">
+          <DataField>RptLabel</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CalcRptLabelLP">
+          <DataField>CalcRptLabelLP</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PromptCount">
+          <DataField>PromptCount</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="DummyScore">
+          <DataField>DummyScore</DataField>
+          <rd:TypeName>System.Double</rd:TypeName>
+        </Field>
+        <Field Name="LeftYaxis">
+          <DataField>LeftYaxis</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="NonPercntCount">
+          <DataField>NonPercntCount</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="RightYaxis">
+          <DataField>RightYaxis</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="EventNameWithLP">
+          <Value>=Fields!EventName.Value</Value>
+        </Field>
+        <Field Name="PercntCount">
+          <DataField>PercntCount</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Color">
+          <DataField>Color</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ColName">
+          <DataField>ColName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Treatment">
+          <DataField>Treatment</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Shape">
+          <DataField>Shape</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Deftn">
+          <DataField>Deftn</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Tablix Name="Tablix1">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>32.84124cm</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.5cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="StudentFname">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!StudentLname.Value &amp;","&amp; Fields!StudentFname.Value</Value>
+                                  <Style>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>StudentFname</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <VerticalAlign>Top</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.5cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="LessonPlanName1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!LessonPlanName.Value</Value>
+                                  <Style>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>=IIf(InStr(Fields!LessonPlanName.Value,"Inactive")&gt;0,"Red","Black")</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>LessonPlanName1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <VerticalAlign>Top</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.5cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="LessonPlanName">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>
+                                    =Format(Parameters!SDate.Value,"MM/dd/yy") &amp;" - "&amp;
+                                    Format(Parameters!EDate.Value,"MM/dd/yy")
+                                  </Value>
+                                  <Style>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>LessonPlanName</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <VerticalAlign>Top</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.5cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="ClassType">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>="( "+Fields!ClassType.Value+" )"</Value>
+                                  <Style>
+                                    <FontSize>9pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>ClassType</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <VerticalAlign>Top</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.6cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Subreport Name="SubMedication">
+                          <ReportName>MedicationGroup</ReportName>
+                          <Parameters>
+                            <Parameter Name="StudentId">
+                              <Value>=Parameters!StudentId.Value</Value>
+                            </Parameter>
+                            <Parameter Name="SchoolId">
+                              <Value>=Parameters!SchoolId.Value</Value>
+                            </Parameter>
+                            <Parameter Name="StartDate">
+                              <Value>=Parameters!SDate.Value</Value>
+                            </Parameter>
+                            <Parameter Name="EndDate">
+                              <Value>=Parameters!EDate.Value</Value>
+                            </Parameter>
+                          </Parameters>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                          </Style>
+                        </Subreport>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.6cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=First(Fields!Treatment.Value)</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <PaddingLeft>80pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>20.25242cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Chart Name="Chart5">
+                          <ChartCategoryHierarchy>
+                            <ChartMembers>
+                              <ChartMember>
+                                <Group Name="Chart5_CategoryGroup">
+                                  <GroupExpressions>
+                                    <GroupExpression>=Fields!AggredatedDate.Value</GroupExpression>
+                                  </GroupExpressions>
+                                </Group>
+                                <SortExpressions>
+                                  <SortExpression>
+                                    <Value>=Fields!AggredatedDate.Value</Value>
+                                  </SortExpression>
+                                </SortExpressions>
+                                <Label>=Fields!AggredatedDate.Value</Label>
+                              </ChartMember>
+                            </ChartMembers>
+                          </ChartCategoryHierarchy>
+                          <ChartSeriesHierarchy>
+                            <ChartMembers>
+                              <ChartMember>
+                                <Group Name="Chart5_SeriesGroup">
+                                  <GroupExpressions>
+                                    <GroupExpression>=Fields!LessonPlanId.Value</GroupExpression>
+                                  </GroupExpressions>
+                                </Group>
+                                <SortExpressions>
+                                  <SortExpression>
+                                    <Value>=Fields!LessonPlanId.Value</Value>
+                                  </SortExpression>
+                                </SortExpressions>
+                                <ChartMembers>
+                                  <ChartMember>
+                                    <Group Name="Chart5_SeriesGroup1">
+                                      <GroupExpressions>
+                                        <GroupExpression>=Fields!CalcRptLabelLP.Value</GroupExpression>
+                                      </GroupExpressions>
+                                    </Group>
+                                    <SortExpressions>
+                                      <SortExpression>
+                                        <Value>=Fields!CalcRptLabelLP.Value</Value>
+                                      </SortExpression>
+                                    </SortExpressions>
+                                    <ChartMembers>
+                                      <ChartMember>
+                                        <Label>Score</Label>
+                                      </ChartMember>
+                                      <ChartMember>
+                                        <Label>Event Type</Label>
+                                      </ChartMember>
+                                      <ChartMember>
+                                        <Label>Event Type</Label>
+                                      </ChartMember>
+                                      <ChartMember>
+                                        <Label>Score</Label>
+                                      </ChartMember>
+                                      <ChartMember>
+                                        <Label>Trend</Label>
+                                      </ChartMember>
+                                      <ChartMember>
+                                        <Label>Score</Label>
+                                      </ChartMember>
+                                      <ChartMember>
+                                        <Label>Dummy Score</Label>
+                                      </ChartMember>
+                                      <ChartMember>
+                                        <Label>Dummy Score</Label>
+                                      </ChartMember>
+                                      <ChartMember>
+                                        <Label>Trend</Label>
+                                      </ChartMember>
+                                    </ChartMembers>
+                                    <Label>=Fields!CalcRptLabelLP.Value</Label>
+                                  </ChartMember>
+                                </ChartMembers>
+                                <Label>=Fields!LessonPlanName.Value</Label>
+                              </ChartMember>
+                            </ChartMembers>
+                          </ChartSeriesHierarchy>
+                          <ChartData>
+                            <ChartSeriesCollection>
+                              <ChartSeries Name="Score">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Fields!Score.Value</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <FontSize>8pt</FontSize>
+                                      </Style>
+                                      <Label>=IIf(CountDistinct(Fields!LessonPlanName.Value)=1,Fields!IOAPerc.Value,(Fields!LessonPlanName.Value &amp;"-"&amp; Fields!IOAPerc.Value))</Label>
+                                      <Visible>=IIf(Parameters!IncludeIOA.Value="True",True,False)</Visible>
+                                      <Position>Top</Position>
+                                    </ChartDataLabel>
+                                    <ToolTip>=Format(Fields!AggredatedDate.Value,"MM/dd/yyyy") &amp; " " &amp; "(" &amp; Fields!Score.Value &amp; ")"</ToolTip>
+                                    <Style>
+                                      <Border>
+                                        <Color>=Fields!Color.Value</Color>
+                                      </Border>
+                                      <Color>=Fields!Color.Value</Color>
+                                    </Style>
+                                    <ChartMarker>
+                                      <Type>=Fields!Shape.Value</Type>
+                                      <Size>6pt</Size>
+                                      <Style>
+                                        <Border>
+                                          <Color>=Fields!Color.Value</Color>
+                                        </Border>
+                                        <Color>=Fields!Color.Value</Color>
+                                      </Style>
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Scatter</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>=IIf(Fields!EventType.Value="",Fields!ColName.Value +"-"+ Fields!RptLabel.Value,"")</LegendText>
+                                  <Hidden>=IIf(Fields!CalcType.Value&lt;&gt;"Event",False,True)</Hidden>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="MajorEvent">
+                                <Hidden>=IIf(InStr(Parameters!Events.Value,"Major")&gt;0,False,True)</Hidden>
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <High>=IIf((Fields!EventType.Value="Major" ),1000,"")</High>
+                                      <Low>0</Low>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <FontSize>8pt</FontSize>
+                                      </Style>
+                                      <Label>=Replace(First(Fields!EventNameWithLP.Value), ",", VbCrLf)</Label>
+                                      <Visible>true</Visible>
+                                      <ToolTip>=Replace(First(Fields!EventNameWithLP.Value), ",", VbCrLf)</ToolTip>
+                                    </ChartDataLabel>
+                                    <ToolTip>=Replace(First(Fields!EventNameWithLP.Value), ",", VbCrLf)</ToolTip>
+                                    <Style>
+                                      <Border>
+                                        <Color>Black</Color>
+                                      </Border>
+                                      <Color>Black</Color>
+                                    </Style>
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Range</Type>
+                                <Subtype>Stock</Subtype>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <LegendName>Default</LegendName>
+                                <ChartItemInLegend>
+                                  <Hidden>true</Hidden>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <AllowOutSidePlotArea>True</AllowOutSidePlotArea>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <ShowOverlapped>true</ShowOverlapped>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="MinorEvent">
+                                <Hidden>=IIf(InStr(Parameters!Events.Value,"Minor")&gt;0,False,True)</Hidden>
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <High>=IIf(Fields!EventType.Value="Minor",1000,"")</High>
+                                      <Low>0</Low>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <FontSize>8pt</FontSize>
+                                      </Style>
+                                      <Label>=Replace(First(Fields!EventNameWithLP.Value), ",", VbCrLf)</Label>
+                                      <Visible>true</Visible>
+                                      <ToolTip>=Replace(First(Fields!EventNameWithLP.Value), ",", VbCrLf)</ToolTip>
+                                    </ChartDataLabel>
+                                    <ToolTip>=Replace(First(Fields!EventNameWithLP.Value), ",", VbCrLf)</ToolTip>
+                                    <Style>
+                                      <Border>
+                                        <Color>Black</Color>
+                                        <Style>Dashed</Style>
+                                        <Width>1.2pt</Width>
+                                      </Border>
+                                      <Color>Black</Color>
+                                      <BackgroundGradientType>None</BackgroundGradientType>
+                                      <BackgroundHatchType>None</BackgroundHatchType>
+                                    </Style>
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Range</Type>
+                                <Subtype>Stock</Subtype>
+                                <Style>
+                                  <ShadowOffset>0pt</ShadowOffset>
+                                </Style>
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <Hidden>true</Hidden>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <AllowOutSidePlotArea>True</AllowOutSidePlotArea>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <ShowOverlapped>true</ShowOverlapped>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="ArrowNote">
+                                <Hidden>=IIf(InStr(Parameters!Events.Value,"Arrow")&gt;0,False,True)</Hidden>
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Fields!Score.Value</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style>
+                                        <FontSize>8pt</FontSize>
+                                      </Style>
+                                      <Label>=First(Fields!ArrowNote.Value)</Label>
+                                      <Visible>true</Visible>
+                                      <Position>Left</Position>
+                                    </ChartDataLabel>
+                                    <Style>
+                                      <Color>#00ffffff</Color>
+                                    </Style>
+                                    <ChartMarker>
+                                      <Type>Auto</Type>
+                                      <Size>7pt</Size>
+                                      <Style>
+                                        <Border>
+                                          <Color>#00ffffff</Color>
+                                        </Border>
+                                        <Color>#00ffffff</Color>
+                                      </Style>
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Scatter</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <Hidden>true</Hidden>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="Trend">
+                                <Hidden>=IIf(Parameters!Trendtype.Value="Quarter",IIf(InStr(Fields!RightYaxis.Value,Fields!CalcType.Value),True,False),False)</Hidden>
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Fields!Trend.Value</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                    </ChartDataLabel>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gray</Color>
+                                        <Style>DashDotDot</Style>
+                                        <Width>0.5pt</Width>
+                                      </Border>
+                                      <Color>Gray</Color>
+                                    </Style>
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Line</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <Hidden>true</Hidden>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="ArrowNoteEvent">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=IIf((Fields!Score.Value=0 AND Fields!EventType.Value="Arrow notes"),Fields!Score.Value,"")</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                      <Label>=First(Fields!ArrowNote.Value)</Label>
+                                      <Visible>true</Visible>
+                                      <Position>Left</Position>
+                                    </ChartDataLabel>
+                                    <Style>
+                                      <Border>
+                                        <Color>Black</Color>
+                                      </Border>
+                                      <Color>Black</Color>
+                                    </Style>
+                                    <ChartMarker>
+                                      <Type>Auto</Type>
+                                      <Size>6pt</Size>
+                                      <Style>
+                                        <Border>
+                                          <Color>Black</Color>
+                                        </Border>
+                                        <Color>Black</Color>
+                                      </Style>
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Scatter</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <Hidden>true</Hidden>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Primary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="DummyScore">
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!DummyScore.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                      <Label>=Fields!IOAPerc.Value</Label>
+                                      <Visible>true</Visible>
+                                    </ChartDataLabel>
+                                    <ToolTip>=Format(Fields!AggredatedDate.Value,"MM/dd/yyyy") &amp; " " &amp; "(" &amp; Fields!DummyScore.Value &amp; ")"</ToolTip>
+                                    <Style>
+                                      <Border>
+                                        <Color>=Fields!Color.Value</Color>
+                                      </Border>
+                                      <Color>=Fields!Color.Value</Color>
+                                    </Style>
+                                    <ChartMarker>
+                                      <Type>=Fields!Shape.Value</Type>
+                                      <Size>6pt</Size>
+                                      <Style>
+                                        <Border>
+                                          <Color>=Fields!Color.Value</Color>
+                                        </Border>
+                                        <Color>=Fields!Color.Value</Color>
+                                      </Style>
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Scatter</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <LegendText>=IIf(Fields!NonPercntCount.Value&gt;0,Fields!ColName.Value +"-"+ Fields!RptLabel.Value,"")</LegendText>
+                                  <Hidden>true</Hidden>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Secondary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="ArrowNote1">
+                                <Hidden>=IIf(InStr(Parameters!Events.Value,"Arrow")&gt;0,False,True)</Hidden>
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Sum(Fields!DummyScore.Value)</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                      <Label>=First(Fields!ArrowNote.Value)</Label>
+                                      <Visible>true</Visible>
+                                      <Position>Left</Position>
+                                    </ChartDataLabel>
+                                    <Style>
+                                      <Border>
+                                        <Color>#00ffffff</Color>
+                                      </Border>
+                                      <Color>#00ffffff</Color>
+                                    </Style>
+                                    <ChartMarker>
+                                      <Type>Auto</Type>
+                                      <Size>7pt</Size>
+                                      <Style>
+                                        <Border>
+                                          <Color>#00ffffff</Color>
+                                        </Border>
+                                        <Color>#00ffffff</Color>
+                                      </Style>
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Scatter</Type>
+                                <Style>
+                                  <ShadowColor>#00ffffff</ShadowColor>
+                                </Style>
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <Hidden>true</Hidden>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Secondary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                              <ChartSeries Name="TrendRight">
+                                <Hidden>=IIf(Parameters!Trendtype.Value="Quarter",IIf(InStr(Fields!RightYaxis.Value,Fields!CalcType.Value),False,True),True)</Hidden>
+                                <ChartDataPoints>
+                                  <ChartDataPoint>
+                                    <ChartDataPointValues>
+                                      <Y>=Fields!Trend.Value</Y>
+                                    </ChartDataPointValues>
+                                    <ChartDataLabel>
+                                      <Style />
+                                    </ChartDataLabel>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gray</Color>
+                                        <Style>DashDotDot</Style>
+                                        <Width>0.5pt</Width>
+                                      </Border>
+                                      <Color>Gray</Color>
+                                    </Style>
+                                    <ChartMarker>
+                                      <Style />
+                                    </ChartMarker>
+                                    <DataElementOutput>Output</DataElementOutput>
+                                  </ChartDataPoint>
+                                </ChartDataPoints>
+                                <Type>Line</Type>
+                                <Style />
+                                <ChartEmptyPoints>
+                                  <Style />
+                                  <ChartMarker>
+                                    <Style />
+                                  </ChartMarker>
+                                  <ChartDataLabel>
+                                    <Style />
+                                  </ChartDataLabel>
+                                </ChartEmptyPoints>
+                                <ChartItemInLegend>
+                                  <Hidden>true</Hidden>
+                                </ChartItemInLegend>
+                                <ValueAxisName>Secondary</ValueAxisName>
+                                <CategoryAxisName>Primary</CategoryAxisName>
+                                <ChartSmartLabel>
+                                  <CalloutLineColor>Black</CalloutLineColor>
+                                  <MinMovingDistance>0pt</MinMovingDistance>
+                                </ChartSmartLabel>
+                              </ChartSeries>
+                            </ChartSeriesCollection>
+                          </ChartData>
+                          <ChartAreas>
+                            <ChartArea Name="Default">
+                              <ChartCategoryAxes>
+                                <ChartAxis Name="Primary">
+                                  <Style>
+                                    <Border>
+                                      <Style>Solid</Style>
+                                    </Border>
+                                    <FontSize>8pt</FontSize>
+                                    <Format>MM/dd/yyyy</Format>
+                                  </Style>
+                                  <ChartAxisTitle>
+                                    <Caption>Dates</Caption>
+                                    <Style>
+                                      <FontSize>9pt</FontSize>
+                                      <FontWeight>Bold</FontWeight>
+                                    </Style>
+                                  </ChartAxisTitle>
+                                  <Interval>=IIf(DateDiff(DateInterval.Day,Parameters!SDate.Value,Parameters!EDate.Value)&gt;30,2,1)</Interval>
+                                  <IntervalType>Days</IntervalType>
+                                  <ChartMajorGridLines>
+                                    <Enabled>False</Enabled>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorGridLines>
+                                  <ChartMinorGridLines>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>Dotted</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMinorGridLines>
+                                  <ChartMinorTickMarks>
+                                    <Style>
+                                      <Border>
+                                        <Style>Solid</Style>
+                                      </Border>
+                                    </Style>
+                                    <Length>1.5</Length>
+                                  </ChartMinorTickMarks>
+                                  <CrossAt>NaN</CrossAt>
+                                  <Scalar>true</Scalar>
+                                  <Minimum>=Parameters!SDate.Value</Minimum>
+                                  <Maximum>=Parameters!EDate.Value</Maximum>
+                                  <Angle>-90</Angle>
+                                  <LabelsAutoFitDisabled>true</LabelsAutoFitDisabled>
+                                  <ChartAxisScaleBreak>
+                                    <Style />
+                                  </ChartAxisScaleBreak>
+                                </ChartAxis>
+                                <ChartAxis Name="Secondary">
+                                  <Visible>False</Visible>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                  </Style>
+                                  <ChartAxisTitle>
+                                    <Caption />
+                                    <Style>
+                                      <FontSize>8pt</FontSize>
+                                    </Style>
+                                  </ChartAxisTitle>
+                                  <ChartMajorGridLines>
+                                    <Enabled>False</Enabled>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorGridLines>
+                                  <ChartMinorGridLines>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>Dotted</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMinorGridLines>
+                                  <ChartMinorTickMarks>
+                                    <Length>0.5</Length>
+                                  </ChartMinorTickMarks>
+                                  <CrossAt>NaN</CrossAt>
+                                  <Location>Opposite</Location>
+                                  <Minimum>NaN</Minimum>
+                                  <Maximum>NaN</Maximum>
+                                  <ChartAxisScaleBreak>
+                                    <Style />
+                                  </ChartAxisScaleBreak>
+                                </ChartAxis>
+                              </ChartCategoryAxes>
+                              <ChartValueAxes>
+                                <ChartAxis Name="Primary">
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <Format>0;(0)</Format>
+                                  </Style>
+                                  <ChartAxisTitle>
+                                    <Caption>=First(Fields!LeftYaxis.Value)</Caption>
+                                    <Style>
+                                      <FontSize>9pt</FontSize>
+                                      <FontWeight>Bold</FontWeight>
+                                    </Style>
+                                  </ChartAxisTitle>
+                                  <Interval>=IIf(Fields!PercntCount.Value&gt;0,10,IIf(Max(Fields!Score.Value)=0,1,(IIf(Max(Fields!Score.Value)=1,1,IIf(Max(Fields!Score.Value)&gt;=50,10,IIf(Max(Fields!Score.Value)&gt;=20,5,1))))))</Interval>
+                                  <IntervalType>Number</IntervalType>
+                                  <ChartMajorGridLines>
+                                    <Enabled>False</Enabled>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorGridLines>
+                                  <ChartMinorGridLines>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>Dotted</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMinorGridLines>
+                                  <ChartMinorTickMarks>
+                                    <Length>0.5</Length>
+                                  </ChartMinorTickMarks>
+                                  <CrossAt>NaN</CrossAt>
+                                  <Minimum>0</Minimum>
+                                  <Maximum>=IIf(InStr(Fields!CalcType.Value,"%"),(100),(Max(Fields!Score.Value)))</Maximum>
+                                  <ChartAxisScaleBreak>
+                                    <Style />
+                                  </ChartAxisScaleBreak>
+                                </ChartAxis>
+                                <ChartAxis Name="Secondary">
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <Format>0;(0)</Format>
+                                    <Color>=IIf(First(Fields!RightYaxis.Value)="","White","Black")</Color>
+                                  </Style>
+                                  <ChartAxisTitle>
+                                    <Caption>=First(Fields!RightYaxis.Value)</Caption>
+                                    <Style>
+                                      <FontSize>8pt</FontSize>
+                                      <FontWeight>Bold</FontWeight>
+                                    </Style>
+                                    <TextOrientation>Rotated270</TextOrientation>
+                                  </ChartAxisTitle>
+                                  <Interval>=IIf(Fields!PercntCount.Value=2 AND Fields!NonPercntCount.Value=0,10,IIf(Max(Fields!DummyScore.Value)=0,1,(IIf(Max(Fields!DummyScore.Value)=1,1,IIf(Max(Fields!DummyScore.Value)&gt;=50,10,IIf(Max(Fields!DummyScore.Value)&gt;=20,5,1))))))</Interval>
+                                  <IntervalType>Number</IntervalType>
+                                  <ChartMajorGridLines>
+                                    <Enabled>False</Enabled>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorGridLines>
+                                  <ChartMinorGridLines>
+                                    <Style>
+                                      <Border>
+                                        <Color>Gainsboro</Color>
+                                        <Style>Dotted</Style>
+                                      </Border>
+                                    </Style>
+                                  </ChartMinorGridLines>
+                                  <ChartMajorTickMarks>
+                                    <Style>
+                                      <Border>
+                                        <Color>=IIf(First(Fields!RightYaxis.Value)="","White","Black")</Color>
+                                      </Border>
+                                    </Style>
+                                  </ChartMajorTickMarks>
+                                  <ChartMinorTickMarks>
+                                    <Length>0.5</Length>
+                                  </ChartMinorTickMarks>
+                                  <CrossAt>NaN</CrossAt>
+                                  <Location>Opposite</Location>
+                                  <Minimum>0</Minimum>
+                                  <Maximum>=IIf(Fields!PercntCount.Value=2 AND Fields!NonPercntCount.Value=0,(100),(Max(Fields!DummyScore.Value)))</Maximum>
+                                  <ChartAxisScaleBreak>
+                                    <Style />
+                                  </ChartAxisScaleBreak>
+                                </ChartAxis>
+                              </ChartValueAxes>
+                              <Style>
+                                <Border>
+                                  <Style>Solid</Style>
+                                  <Width>0.5pt</Width>
+                                </Border>
+                                <BackgroundGradientType>None</BackgroundGradientType>
+                                <ShadowOffset>0pt</ShadowOffset>
+                              </Style>
+                              <ChartInnerPlotPosition>
+                                <Top>3</Top>
+                                <Left>6.747</Left>
+                                <Height>84.598</Height>
+                                <Width>86.648</Width>
+                              </ChartInnerPlotPosition>
+                            </ChartArea>
+                          </ChartAreas>
+                          <ChartLegends>
+                            <ChartLegend Name="Default">
+                              <Style>
+                                <BackgroundGradientType>None</BackgroundGradientType>
+                                <FontSize>8pt</FontSize>
+                              </Style>
+                              <Position>BottomRight</Position>
+                              <ChartLegendTitle>
+                                <Caption />
+                                <Style>
+                                  <FontSize>8pt</FontSize>
+                                  <FontWeight>Bold</FontWeight>
+                                  <TextAlign>Center</TextAlign>
+                                </Style>
+                              </ChartLegendTitle>
+                              <HeaderSeparatorColor>Black</HeaderSeparatorColor>
+                              <ColumnSeparatorColor>Black</ColumnSeparatorColor>
+                            </ChartLegend>
+                          </ChartLegends>
+                          <Palette>BrightPastel</Palette>
+                          <ChartBorderSkin>
+                            <Style>
+                              <BackgroundColor>Gray</BackgroundColor>
+                              <BackgroundGradientType>None</BackgroundGradientType>
+                              <Color>White</Color>
+                            </Style>
+                          </ChartBorderSkin>
+                          <ChartNoDataMessage Name="NoDataMessage">
+                            <Caption>No Data Available</Caption>
+                            <Style>
+                              <BackgroundGradientType>None</BackgroundGradientType>
+                              <TextAlign>General</TextAlign>
+                              <VerticalAlign>Top</VerticalAlign>
+                            </Style>
+                          </ChartNoDataMessage>
+                          <DataSetName>DSAggScoreSet</DataSetName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>None</Style>
+                              <Width>0.5pt</Width>
+                            </Border>
+                            <BackgroundColor>White</BackgroundColor>
+                            <BackgroundGradientType>None</BackgroundGradientType>
+                          </Style>
+                        </Chart>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.6cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Tablix Name="Tablix2">
+                          <TablixBody>
+                            <TablixColumns>
+                              <TablixColumn>
+                                <Width>2.84124cm</Width>
+                              </TablixColumn>
+                              <TablixColumn>
+                                <Width>28cm</Width>
+                              </TablixColumn>
+                              <TablixColumn>
+                                <Width>2cm</Width>
+                              </TablixColumn>
+                            </TablixColumns>
+                            <TablixRows>
+                              <TablixRow>
+                                <Height>0.3cm</Height>
+                                <TablixCells>
+                                  <TablixCell>
+                                    <CellContents>
+                                      <Textbox Name="Textbox5">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value />
+                                                <Style />
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style />
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>Textbox5</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>None</Style>
+                                          </Border>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixCell>
+                                  <TablixCell>
+                                    <CellContents>
+                                      <Textbox Name="Textbox7">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value>="Definition: "+First(Fields!Deftn.Value)</Value>
+                                                <Style />
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style />
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>Textbox7</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>None</Style>
+                                          </Border>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixCell>
+                                  <TablixCell>
+                                    <CellContents>
+                                      <Textbox Name="Textbox9">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value />
+                                                <Style />
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style />
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>Textbox9</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>None</Style>
+                                          </Border>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixCell>
+                                </TablixCells>
+                              </TablixRow>
+                              <TablixRow>
+                                <Height>0.3cm</Height>
+                                <TablixCells>
+                                  <TablixCell>
+                                    <CellContents>
+                                      <Textbox Name="Textbox10">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value />
+                                                <Style />
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style />
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>Textbox10</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>None</Style>
+                                          </Border>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixCell>
+                                  <TablixCell>
+                                    <CellContents>
+                                      <Textbox Name="Textbox11">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value>=IIf(Parameters!SchoolId.Value=1,"Melmark New England","Melmark Pennsylvania")</Value>
+                                                <Style />
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style>
+                                              <TextAlign>Right</TextAlign>
+                                            </Style>
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>Textbox11</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>None</Style>
+                                          </Border>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                      <ColSpan>2</ColSpan>
+                                    </CellContents>
+                                  </TablixCell>
+                                  <TablixCell />
+                                </TablixCells>
+                              </TablixRow>
+                            </TablixRows>
+                          </TablixBody>
+                          <TablixColumnHierarchy>
+                            <TablixMembers>
+                              <TablixMember />
+                              <TablixMember />
+                              <TablixMember />
+                            </TablixMembers>
+                          </TablixColumnHierarchy>
+                          <TablixRowHierarchy>
+                            <TablixMembers>
+                              <TablixMember>
+                                <Group Name="Details">
+                                  <GroupExpressions>
+                                    <GroupExpression>=Fields!Deftn.Value</GroupExpression>
+                                  </GroupExpressions>
+                                </Group>
+                                <TablixMembers>
+                                  <TablixMember />
+                                  <TablixMember />
+                                </TablixMembers>
+                              </TablixMember>
+                            </TablixMembers>
+                          </TablixRowHierarchy>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                          </Style>
+                        </Tablix>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <Group Name="LessonPlanId">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!LessonPlanId.Value</GroupExpression>
+                    </GroupExpressions>
+                    <PageBreak>
+                      <BreakLocation>Between</BreakLocation>
+                    </PageBreak>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!LessonPlanId.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <TablixHeader>
+                    <Size>0.07938cm</Size>
+                    <CellContents>
+                      <Textbox Name="LessonPlanId">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>=Fields!LessonPlanId.Value</Value>
+                                <Style />
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>LessonPlanId</rd:DefaultName>
+                        <Visibility>
+                          <Hidden>true</Hidden>
+                        </Visibility>
+                        <Style>
+                          <Border>
+                            <Style>None</Style>
+                          </Border>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixHeader>
+                  <TablixMembers>
+                    <TablixMember>
+                      <TablixHeader>
+                        <Size>0.07938cm</Size>
+                        <CellContents>
+                          <Textbox Name="CalcType">
+                            <CanGrow>true</CanGrow>
+                            <KeepTogether>true</KeepTogether>
+                            <Paragraphs>
+                              <Paragraph>
+                                <TextRuns>
+                                  <TextRun>
+                                    <Value>=Fields!CalcType.Value</Value>
+                                    <Style />
+                                  </TextRun>
+                                </TextRuns>
+                                <Style />
+                              </Paragraph>
+                            </Paragraphs>
+                            <rd:DefaultName>CalcType</rd:DefaultName>
+                            <Visibility>
+                              <Hidden>true</Hidden>
+                            </Visibility>
+                            <Style>
+                              <Border>
+                                <Style>None</Style>
+                              </Border>
+                            </Style>
+                          </Textbox>
+                        </CellContents>
+                      </TablixHeader>
+                      <TablixMembers>
+                        <TablixMember />
+                        <TablixMember />
+                        <TablixMember />
+                        <TablixMember />
+                        <TablixMember>
+                          <Visibility>
+                            <Hidden>=IIf(Parameters!IncludeMedication.Value="True",False,True)</Hidden>
+                          </Visibility>
+                        </TablixMember>
+                        <TablixMember />
+                        <TablixMember />
+                      </TablixMembers>
+                    </TablixMember>
+                    <TablixMember>
+                      <TablixHeader>
+                        <Size>0.07938cm</Size>
+                        <CellContents>
+                          <Textbox Name="Textbox2">
+                            <CanGrow>true</CanGrow>
+                            <KeepTogether>true</KeepTogether>
+                            <Paragraphs>
+                              <Paragraph>
+                                <TextRuns>
+                                  <TextRun>
+                                    <Value />
+                                    <Style />
+                                  </TextRun>
+                                </TextRuns>
+                                <Style />
+                              </Paragraph>
+                            </Paragraphs>
+                            <rd:DefaultName>Textbox2</rd:DefaultName>
+                            <Style>
+                              <Border>
+                                <Style>None</Style>
+                              </Border>
+                            </Style>
+                          </Textbox>
+                        </CellContents>
+                      </TablixHeader>
+                    </TablixMember>
+                  </TablixMembers>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <NoRowsMessage>No Data Available</NoRowsMessage>
+            <DataSetName>DSAggScoreSet</DataSetName>
+            <PageBreak>
+              <BreakLocation>Start</BreakLocation>
+            </PageBreak>
+            <Height>24.05242cm</Height>
+            <Width>33cm</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
+        </ReportItems>
+        <Height>24.05242cm</Height>
+        <Style />
+      </Body>
+      <Width>33cm</Width>
+      <Page>
+        <PageHeight>30cm</PageHeight>
+        <PageWidth>17cm</PageWidth>
+        <LeftMargin>0cm</LeftMargin>
+        <RightMargin>0cm</RightMargin>
+        <TopMargin>0cm</TopMargin>
+        <BottomMargin>0cm</BottomMargin>
+        <ColumnSpacing>0.13cm</ColumnSpacing>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="SDate">
+      <DataType>DateTime</DataType>
+      <Prompt>SDate</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="EDate">
+      <DataType>DateTime</DataType>
+      <Prompt>EDate</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="SchoolId">
+      <DataType>Integer</DataType>
+      <Prompt>SchoolId</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="StudentId">
+      <DataType>Integer</DataType>
+      <Prompt>StudentId</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="AllLesson">
+      <DataType>String</DataType>
+      <Prompt>AllLesson</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Events">
+      <DataType>String</DataType>
+      <Prompt>Events</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="IncludeIOA">
+      <DataType>String</DataType>
+      <Prompt>IncludeIOA</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Trendtype">
+      <DataType>String</DataType>
+      <Prompt>Trendtype</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="IncludeMedication">
+      <DataType>String</DataType>
+      <Prompt>IncludeMedication</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="ClsType">
+      <DataType>String</DataType>
+      <Prompt>ClsType</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="SetId">
+      <DataType>String</DataType>
+      <Prompt>SetId</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="DsTempSetColCalcId">
+      <DataType>String</DataType>
+      <Prompt>DsTempSetColCalcId</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="IsMaintanance">
+      <DataType>String</DataType>
+      <Prompt>IsMaintanance</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="LPStatus">
+      <DataType>String</DataType>
+      <Prompt>LPStatus</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <Code>
+    Public Function AddLineBreakBetweenWords(words As String) As String
+
+    Dim rsRegEx as System.Text.RegularExpressions.Regex = new System.Text.RegularExpressions.Regex("\s+")
+
+    words = rsRegEx.Replace(words, ",")
+
+    return words.Replace(",", vbCrLf).Trim()
+
+    End Function
+  </Code>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>5cf84dfc-3741-44c5-acf4-36eb0193432e</rd:ReportID>
+</Report>
