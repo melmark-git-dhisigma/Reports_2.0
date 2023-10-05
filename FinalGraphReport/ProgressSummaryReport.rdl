@@ -192,7 +192,7 @@
               <Width>2.5cm</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>8.50604cm</Width>
+              <Width>5.54271cm</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>3.5cm</Width>
@@ -327,7 +327,6 @@ Fields!Score1.Value, "DSScore"), Microsoft.VisualBasic.Constants.VbCrLf)
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
-                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -765,7 +764,7 @@ Fields!Score1.Value, "DSScore"), Microsoft.VisualBasic.Constants.VbCrLf)
                               <Paragraph>
                                 <TextRuns>
                                   <TextRun>
-                                    <Value>Username</Value>
+                                    <Value>User</Value>
                                     <Style />
                                   </TextRun>
                                 </TextRuns>
@@ -1089,7 +1088,7 @@ Fields!Score1.Value, "DSScore"), Microsoft.VisualBasic.Constants.VbCrLf)
         <Top>0.50271cm</Top>
         <Left>0.45474cm</Left>
         <Height>3cm</Height>
-        <Width>33.40562cm</Width>
+        <Width>30.44229cm</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1100,7 +1099,7 @@ Fields!Score1.Value, "DSScore"), Microsoft.VisualBasic.Constants.VbCrLf)
     <Height>1.53527in</Height>
     <Style />
   </Body>
-  <Width>13.33085in</Width>
+  <Width>12.97668in</Width>
   <Page>
     <PageHeight>29.7cm</PageHeight>
     <PageWidth>21cm</PageWidth>
@@ -1158,12 +1157,13 @@ SELECT DISTINCT StudentId
 	,DSTempSetColCalcId
 	,ColName
 	,CONVERT(varchar,ReportPeriod.PeriodDate,101) AS PeriodDate
-	,(CASE WHEN EXISTS(SELECT DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Approved AND StatusId IN(SELECT  ss  FROM @slpst)) 
-  THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Approved AND StatusId IN(SELECT  ss  FROM @slpst)) 
-ELSE CASE WHEN EXISTS(SELECT DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Maintenance AND StatusId IN(SELECT  ss  FROM @slpst)) 
-THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Maintenance AND StatusId IN(SELECT  ss  FROM @slpst))
-ELSE CASE WHEN EXISTS(SELECT TOP 1 DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Inactive AND StatusId IN(SELECT  ss  FROM @slpst) ORDER BY DSTempHdr.DSTempHdrId DESC) 
-THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Inactive AND StatusId IN(SELECT  ss  FROM @slpst) ORDER BY DSTempHdr.DSTempHdrId DESC) END END END) AS LessonName
+	<!-- ,(CASE WHEN EXISTS(SELECT DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Approved AND StatusId IN(SELECT  ss  FROM @slpst))  -->
+  <!-- THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Approved AND StatusId IN(SELECT  ss  FROM @slpst))  -->
+<!-- ELSE CASE WHEN EXISTS(SELECT DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Maintenance AND StatusId IN(SELECT  ss  FROM @slpst))  -->
+<!-- THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Maintenance AND StatusId IN(SELECT  ss  FROM @slpst)) -->
+<!-- ELSE CASE WHEN EXISTS(SELECT TOP 1 DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Inactive AND StatusId IN(SELECT  ss  FROM @slpst) ORDER BY DSTempHdr.DSTempHdrId DESC)  -->
+<!-- THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Inactive AND StatusId IN(SELECT  ss  FROM @slpst) ORDER BY DSTempHdr.DSTempHdrId DESC) END END END) AS LessonName -->
+	,LessonName
 	,LessonPlanId
 	,CalcType
 	,ClassType
@@ -1181,6 +1181,7 @@ SELECT sc.StudentId
 	
 	,hdr.StdtClassId
 	,hdr.LessonPlanId
+	,(SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=hdr.LessonPlanId AND StudentId=@StudentId AND StatusId IN(SELECT  ss  FROM @slpst) ORDER BY DSTempHdr.DSTempHdrId DESC) AS LessonName
 	,CASE WHEN ResidenceInd=1 THEN 'Residence' ELSE 'Day' END AS ClassType
 	,dcal.IncludeInGraph
 	,'1' AS IsLP
@@ -1469,7 +1470,7 @@ insert into @lsid(lsid) SELECT * FROM Split(@LessonId,',') OPTION (MAXRECURSION 
 
 SELECT        hdr.StdtClassId AS ClassId, sc.DSTempSetColCalcId, DC.ColName, hdr.EndTs AS EvntTs, CONVERT(varchar, hdr.EndTs, 101) AS PeriodDate, hdr.LessonPlanId, 
                         CASE WHEN CalcType IN ('Avg Duration','Total Duration') THEN CASE WHEN Hdr.IsMaintanace = 0 THEN  CalcType + ' (In Seconds)' END Else CalcType END CalcType , CASE WHEN ResidenceInd = 1 THEN 'Residence' ELSE 'Day' END AS ClassType, 
-                         CASE WHEN hdr.SessMissTrailStus = 'Y' THEN 'Mistrial - '+hdr.SessMissTrailRsn ELSE CASE WHEN CHARINDEX('-', CASE WHEN Hdr.IsMaintanace = 0 THEN sc.Score END) 
+                         CASE WHEN hdr.SessMissTrailStus = 'Y' THEN 'Mistrial' ELSE CASE WHEN CHARINDEX('-', CASE WHEN Hdr.IsMaintanace = 0 THEN sc.Score END) 
                          &gt; 0 THEN 'NA' ELSE CASE WHEN CalcType IN ('Avg Duration', 'Total Duration') 
 						 THEN  CASE WHEN  
                          Hdr.IsMaintanace = 0 THEN CONVERT(VARCHAR(50), sc.Score) END ELSE CASE WHEN sc.Score &gt;= 0 AND Hdr.IsMaintanace = 0 THEN CONVERT(VARCHAR(50), sc.Score) END END END END AS Score1,
