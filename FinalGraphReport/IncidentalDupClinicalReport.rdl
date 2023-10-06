@@ -837,7 +837,9 @@ Format(CDate(Parameters!ENDDate.Value),"MM/dd/yy")</Value>
                                   <Y>=IIf(RTrim(LTrim(Fields!EventType.Value))="Arrow notes",Fields!Frequency.Value,"")</Y>
                                 </ChartDataPointValues>
                                 <ChartDataLabel>
-                                  <Style />
+                                  <Style>
+                                    <FontSize>=IIf(DateDiff(DateInterval.Day,Parameters!StartDate.Value,Parameters!ENDDate.Value)&gt;90,"4pt","5pt")</FontSize>
+                                  </Style>
                                   <Label>=First(Fields!ArrowNote.Value)</Label>
                                   <Visible>true</Visible>
                                   <Position>Left</Position>
@@ -1009,7 +1011,7 @@ IIf(Max(Fields!Frequency.Value)&gt;=20,5,1))))))</Interval>
                               </ChartMinorTickMarks>
                               <CrossAt>NaN</CrossAt>
                               <Minimum>0</Minimum>
-							  <Maximum>=IIf(Fields!FrqStat.Value=1,Max(Fields!Frequency.Value),IIf(Fields!FrqStat.Value=2,100,Max(Fields!Frequency.Value)))</Maximum>
+                              <Maximum>=IIf(Fields!FrqStat.Value=1,Max(Fields!Frequency.Value),IIf(Fields!FrqStat.Value=2,100,Max(Fields!Frequency.Value)))</Maximum>
                               <ChartAxisScaleBreak>
                                 <Style />
                               </ChartAxisScaleBreak>
