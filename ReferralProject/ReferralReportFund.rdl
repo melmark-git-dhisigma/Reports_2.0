@@ -12,21 +12,29 @@
     <DataSet Name="ReferralFundDataset">
       <Query>
         <DataSourceName>ReferralFund</DataSourceName>
-        <CommandText>SELECT StudentPersonalId,QueueProcess,QueueStatusId,StaffName,Nameofcontact,studentName,SchoolId,ImageUrl,Funded
+        <CommandText>SELECT StudentPersonalId,QueueProcess,QueueStatusId,StaffName,Nameofcontact,studentName,SchoolId,DateOfReferral,City,State,ImageUrl,Funded
  FROM 
 (SELECT StudentPersonalId,QueueProcess,FUNDVSNONFUND.QueueStatusId,REFCL.StaffName,REFCL.Nameofcontact,studentName,FUNDVSNONFUND.SchoolId,
-ImageUrl,Funded FROM (SELECT *,
+DateOfReferral,City,State,ImageUrl,Funded FROM (SELECT *,
 (SELECT QueueStatusId FROM ref_QueueStatus WHERE StudentPersonalId=FUND.StudentPersonalId AND QueueProcess=FUND.QueueProcess AND 
 QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND CurrentStatus='false' ) AS QueueStatusId
- FROM (SELECT SP.StudentPersonalId,SP.LastName+','+SP.FirstName AS studentName,SP.SchoolId,(SELECT MAX(QueueProcess) FROM ref_QueueStatus WHERE StudentPersonalId=SP.StudentPersonalId) AS QueueProcess,
- CASE WHEN SP.ImageUrl IS NULL OR SP.ImageUrl='' THEN CASE WHEN Gender=1 THEN 
-	 (SELECT FormatImg FROM [dbo].[DefaultImage] WHERE Sex='M')
-      ELSE  (SELECT FormatImg FROM [dbo].[DefaultImage] WHERE Sex='F')
-      END ELSE [ImageUrl] END AS [ImageUrl],CASE WHEN SP.FundingVerification='True' THEN 'FD' ELSE 'NF' END  Funded  
- FROM StudentPersonal SP WHERE SP.StudentType='Referral') FUND) FUNDVSNONFUND
+ FROM (SELECT SP.StudentPersonalId,SP.LastName+','+SP.FirstName AS studentName,
+ SP.SchoolId,
+ CONVERT(VARCHAR(10), SP.[AdmissionDate], 101) AS [DateOfReferral],
+ ADL.City AS City,
+ (SELECT LookupName FROM LookUp WHERE LookupType = 'State' AND LookupId = ADL.StateProvince) AS State, 
+ (SELECT MAX(QueueProcess) FROM ref_QueueStatus WHERE StudentPersonalId=SP.StudentPersonalId) AS QueueProcess,
+ CASE WHEN SP.ImageUrl IS NULL OR SP.ImageUrl='' THEN 
+		CASE WHEN Gender=1 THEN (SELECT FormatImg FROM [dbo].[DefaultImage] WHERE Sex='M')
+		ELSE  (SELECT FormatImg FROM [dbo].[DefaultImage] WHERE Sex='F')
+		END ELSE [ImageUrl] END AS [ImageUrl],CASE WHEN SP.FundingVerification='True' THEN 'FD' ELSE 'NF' END  Funded
+ FROM StudentPersonal SP 
+ INNER JOIN StudentAddresRel SDR ON SDR.StudentPersonalId=SP.StudentPersonalId
+	 INNER JOIN AddressList ADL ON ADL.AddressId=SDR.AddressId
+ WHERE SP.StudentType='Referral') FUND) FUNDVSNONFUND
  LEFT JOIN ref_CallLogs AS REFCL ON REFCL.QueueStatusId=FUNDVSNONFUND.QueueStatusId
-) FUNDEDVSNONFUNDED
- ORDER BY StudentPersonalId DESC</CommandText>
+)  FUNDEDVSNONFUNDED
+ ORDER BY DATEPART(YEAR,DateOfReferral) DESC, DATEPART(MONTH,DateOfReferral) DESC, DATEPART(DAY,DateOfReferral) DESC</CommandText>
         <Timeout>42</Timeout>
       </Query>
       <Fields>
@@ -62,8 +70,20 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
           <DataField>ImageUrl</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="DateOfReferral">
+          <DataField>DateOfReferral</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="Funded">
           <DataField>Funded</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="City">
+          <DataField>City</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="State">
+          <DataField>State</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
@@ -95,42 +115,6 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
                 <TablixCornerRow>
                   <TablixCornerCell>
                     <CellContents>
-                      <Textbox Name="Textbox30">
-                        <CanGrow>true</CanGrow>
-                        <KeepTogether>true</KeepTogether>
-                        <Paragraphs>
-                          <Paragraph>
-                            <TextRuns>
-                              <TextRun>
-                                <Value />
-                                <Style>
-                                  <FontWeight>Bold</FontWeight>
-                                  <Color>White</Color>
-                                </Style>
-                              </TextRun>
-                            </TextRuns>
-                            <Style>
-                              <TextAlign>Center</TextAlign>
-                            </Style>
-                          </Paragraph>
-                        </Paragraphs>
-                        <rd:DefaultName>Textbox30</rd:DefaultName>
-                        <Style>
-                          <Border>
-                            <Color>LightGrey</Color>
-                            <Style>Solid</Style>
-                          </Border>
-                          <BackgroundColor>MidnightBlue</BackgroundColor>
-                          <PaddingLeft>2pt</PaddingLeft>
-                          <PaddingRight>2pt</PaddingRight>
-                          <PaddingTop>2pt</PaddingTop>
-                          <PaddingBottom>2pt</PaddingBottom>
-                        </Style>
-                      </Textbox>
-                    </CellContents>
-                  </TablixCornerCell>
-                  <TablixCornerCell>
-                    <CellContents>
                       <Textbox Name="Textbox8">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
@@ -151,6 +135,114 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
                           </Paragraph>
                         </Paragraphs>
                         <rd:DefaultName>Textbox8</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>LightGrey</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>MidnightBlue</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixCornerCell>
+                  <TablixCornerCell>
+                    <CellContents>
+                      <Textbox Name="Textbox1">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>Date Of Referral</Value>
+                                <Style>
+                                  <FontWeight>Bold</FontWeight>
+                                  <Color>White</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style>
+                              <TextAlign>Center</TextAlign>
+                            </Style>
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>Textbox1</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>LightGrey</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>MidnightBlue</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixCornerCell>
+                  <TablixCornerCell>
+                    <CellContents>
+                      <Textbox Name="Textbox4">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>City</Value>
+                                <Style>
+                                  <FontWeight>Bold</FontWeight>
+                                  <Color>White</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style>
+                              <TextAlign>Center</TextAlign>
+                            </Style>
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>Textbox4</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>LightGrey</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>MidnightBlue</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixCornerCell>
+                  <TablixCornerCell>
+                    <CellContents>
+                      <Textbox Name="Textbox7">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>State</Value>
+                                <Style>
+                                  <FontWeight>Bold</FontWeight>
+                                  <Color>White</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style>
+                              <TextAlign>Center</TextAlign>
+                            </Style>
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>Textbox7</rd:DefaultName>
                         <Style>
                           <Border>
                             <Color>LightGrey</Color>
@@ -379,9 +471,9 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>2.5cm</Size>
+                    <Size>5.92668cm</Size>
                     <CellContents>
-                      <Textbox Name="Textbox37">
+                      <Textbox Name="Textbox38">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
@@ -397,7 +489,7 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
                             <Style />
                           </Paragraph>
                         </Paragraphs>
-                        <rd:DefaultName>Textbox37</rd:DefaultName>
+                        <rd:DefaultName>Textbox38</rd:DefaultName>
                         <Style>
                           <Border>
                             <Color>LightGrey</Color>
@@ -410,15 +502,14 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
                           <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
-                      <rd:Selected>true</rd:Selected>
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>5.92668cm</Size>
+                        <Size>3.08208cm</Size>
                         <CellContents>
-                          <Textbox Name="Textbox38">
+                          <Textbox Name="Textbox13">
                             <CanGrow>true</CanGrow>
                             <KeepTogether>true</KeepTogether>
                             <Paragraphs>
@@ -434,7 +525,7 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
                                 <Style />
                               </Paragraph>
                             </Paragraphs>
-                            <rd:DefaultName>Textbox38</rd:DefaultName>
+                            <rd:DefaultName>Textbox13</rd:DefaultName>
                             <Style>
                               <Border>
                                 <Color>LightGrey</Color>
@@ -447,13 +538,87 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
                               <PaddingBottom>2pt</PaddingBottom>
                             </Style>
                           </Textbox>
+                          <rd:Selected>true</rd:Selected>
                         </CellContents>
                       </TablixHeader>
+                      <TablixMembers>
+                        <TablixMember>
+                          <TablixHeader>
+                            <Size>3.71708cm</Size>
+                            <CellContents>
+                              <Textbox Name="Textbox12">
+                                <CanGrow>true</CanGrow>
+                                <KeepTogether>true</KeepTogether>
+                                <Paragraphs>
+                                  <Paragraph>
+                                    <TextRuns>
+                                      <TextRun>
+                                        <Value />
+                                        <Style>
+                                          <Color>White</Color>
+                                        </Style>
+                                      </TextRun>
+                                    </TextRuns>
+                                    <Style />
+                                  </Paragraph>
+                                </Paragraphs>
+                                <rd:DefaultName>Textbox12</rd:DefaultName>
+                                <Style>
+                                  <Border>
+                                    <Color>LightGrey</Color>
+                                    <Style>Solid</Style>
+                                  </Border>
+                                  <BackgroundColor>MidnightBlue</BackgroundColor>
+                                  <PaddingLeft>2pt</PaddingLeft>
+                                  <PaddingRight>2pt</PaddingRight>
+                                  <PaddingTop>2pt</PaddingTop>
+                                  <PaddingBottom>2pt</PaddingBottom>
+                                </Style>
+                              </Textbox>
+                            </CellContents>
+                          </TablixHeader>
+                          <TablixMembers>
+                            <TablixMember>
+                              <TablixHeader>
+                                <Size>3.58479cm</Size>
+                                <CellContents>
+                                  <Textbox Name="Textbox11">
+                                    <CanGrow>true</CanGrow>
+                                    <KeepTogether>true</KeepTogether>
+                                    <Paragraphs>
+                                      <Paragraph>
+                                        <TextRuns>
+                                          <TextRun>
+                                            <Value />
+                                            <Style>
+                                              <Color>White</Color>
+                                            </Style>
+                                          </TextRun>
+                                        </TextRuns>
+                                        <Style />
+                                      </Paragraph>
+                                    </Paragraphs>
+                                    <rd:DefaultName>Textbox11</rd:DefaultName>
+                                    <Style>
+                                      <Border>
+                                        <Color>LightGrey</Color>
+                                        <Style>Solid</Style>
+                                      </Border>
+                                      <BackgroundColor>MidnightBlue</BackgroundColor>
+                                      <PaddingLeft>2pt</PaddingLeft>
+                                      <PaddingRight>2pt</PaddingRight>
+                                      <PaddingTop>2pt</PaddingTop>
+                                      <PaddingBottom>2pt</PaddingBottom>
+                                    </Style>
+                                  </Textbox>
+                                </CellContents>
+                              </TablixHeader>
+                            </TablixMember>
+                          </TablixMembers>
+                        </TablixMember>
+                      </TablixMembers>
                     </TablixMember>
                   </TablixMembers>
-                  <FixedData>true</FixedData>
-                  <KeepWithGroup>After</KeepWithGroup>
-                  <RepeatOnNewPage>true</RepeatOnNewPage>
                 </TablixMember>
                 <TablixMember>
                   <Group Name="studentName">
@@ -464,42 +629,56 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>2.5cm</Size>
+                        <Size>5.92668cm</Size>
                         <CellContents>
-                          <Image Name="Image2">
-                            <Source>Database</Source>
-                            <Value>=Fields!ImageUrl.Value</Value>
-                            <MIMEType>image/jpeg</MIMEType>
-                            <Sizing>FitProportional</Sizing>
+                          <Textbox Name="studentName1">
+                            <CanGrow>true</CanGrow>
+                            <KeepTogether>true</KeepTogether>
+                            <Paragraphs>
+                              <Paragraph>
+                                <TextRuns>
+                                  <TextRun>
+                                    <Value>=Fields!studentName.Value</Value>
+                                    <Style />
+                                  </TextRun>
+                                </TextRuns>
+                                <Style />
+                              </Paragraph>
+                            </Paragraphs>
+                            <rd:DefaultName>studentName1</rd:DefaultName>
                             <Style>
                               <Border>
                                 <Color>LightGrey</Color>
                                 <Style>Solid</Style>
                               </Border>
+                              <PaddingLeft>2pt</PaddingLeft>
+                              <PaddingRight>2pt</PaddingRight>
+                              <PaddingTop>2pt</PaddingTop>
+                              <PaddingBottom>2pt</PaddingBottom>
                             </Style>
-                          </Image>
+                          </Textbox>
                         </CellContents>
                       </TablixHeader>
                       <TablixMembers>
                         <TablixMember>
                           <TablixHeader>
-                            <Size>5.92668cm</Size>
+                            <Size>3.08208cm</Size>
                             <CellContents>
-                              <Textbox Name="studentName1">
+                              <Textbox Name="DateOfReferral">
                                 <CanGrow>true</CanGrow>
                                 <KeepTogether>true</KeepTogether>
                                 <Paragraphs>
                                   <Paragraph>
                                     <TextRuns>
                                       <TextRun>
-                                        <Value>=Fields!studentName.Value</Value>
+                                        <Value>=Fields!DateOfReferral.Value</Value>
                                         <Style />
                                       </TextRun>
                                     </TextRuns>
                                     <Style />
                                   </Paragraph>
                                 </Paragraphs>
-                                <rd:DefaultName>studentName1</rd:DefaultName>
+                                <rd:DefaultName>DateOfReferral</rd:DefaultName>
                                 <Style>
                                   <Border>
                                     <Color>LightGrey</Color>
@@ -513,6 +692,76 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
                               </Textbox>
                             </CellContents>
                           </TablixHeader>
+                          <TablixMembers>
+                            <TablixMember>
+                              <TablixHeader>
+                                <Size>3.71708cm</Size>
+                                <CellContents>
+                                  <Textbox Name="City">
+                                    <CanGrow>true</CanGrow>
+                                    <KeepTogether>true</KeepTogether>
+                                    <Paragraphs>
+                                      <Paragraph>
+                                        <TextRuns>
+                                          <TextRun>
+                                            <Value>=Fields!City.Value</Value>
+                                            <Style />
+                                          </TextRun>
+                                        </TextRuns>
+                                        <Style />
+                                      </Paragraph>
+                                    </Paragraphs>
+                                    <rd:DefaultName>City</rd:DefaultName>
+                                    <Style>
+                                      <Border>
+                                        <Color>LightGrey</Color>
+                                        <Style>Solid</Style>
+                                      </Border>
+                                      <PaddingLeft>2pt</PaddingLeft>
+                                      <PaddingRight>2pt</PaddingRight>
+                                      <PaddingTop>2pt</PaddingTop>
+                                      <PaddingBottom>2pt</PaddingBottom>
+                                    </Style>
+                                  </Textbox>
+                                </CellContents>
+                              </TablixHeader>
+                              <TablixMembers>
+                                <TablixMember>
+                                  <TablixHeader>
+                                    <Size>3.58479cm</Size>
+                                    <CellContents>
+                                      <Textbox Name="State">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value>=Fields!State.Value</Value>
+                                                <Style />
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style />
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>State</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>Solid</Style>
+                                          </Border>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixHeader>
+                                </TablixMember>
+                              </TablixMembers>
+                            </TablixMember>
+                          </TablixMembers>
                         </TablixMember>
                       </TablixMembers>
                     </TablixMember>
@@ -520,14 +769,12 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <RepeatColumnHeaders>true</RepeatColumnHeaders>
-            <RepeatRowHeaders>true</RepeatRowHeaders>
             <NoRowsMessage>No data available</NoRowsMessage>
             <DataSetName>ReferralFundDataset</DataSetName>
             <Top>0.50271cm</Top>
             <Left>0.44662cm</Left>
             <Height>3.7cm</Height>
-            <Width>18.29565cm</Width>
+            <Width>26.17961cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -538,7 +785,7 @@ QueueId=(SELECT QueueId FROM ref_Queue WHERE QueueType='FV')  AND Draft='N' AND 
         <Height>1.85958in</Height>
         <Style />
       </Body>
-      <Width>7.58718in</Width>
+      <Width>10.48277in</Width>
       <Page>
         <PageHeight>29.7cm</PageHeight>
         <PageWidth>21cm</PageWidth>

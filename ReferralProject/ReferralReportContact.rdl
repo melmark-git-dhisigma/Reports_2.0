@@ -13,15 +13,16 @@
       <Query>
         <DataSourceName>ReferralContactData</DataSourceName>
         <CommandText>SELECT        SP.StudentPersonalId, SP.SchoolId, SP.LastName + ',' + SP.FirstName AS ReferralName, LP.LookupName AS Relationship, SP.SocialSecurityNo, SP.ImageUrl, 
-                         CASE WHEN SP.Gender = '1' THEN 'Male' ELSE 'Female' END AS Gender, CONVERT(VARCHAR(10), SP.BirthDate, 101) AS BirthDate, CONVERT(VARCHAR(10),SP.AdmissionDate,101) AS AdmissionDate, SP.PlaceOfBirth, SP.Height, SP.Weight, 
-                         SP.PrimaryLanguage, CP.LastName + ',' + CP.FirstName AS ContactName, CP.PrimaryLanguage AS ContactPrimaryLanguage, CP.Occupation
+                         CASE WHEN SP.Gender = '1' THEN 'Male' ELSE 'Female' END AS Gender, CONVERT(VARCHAR(10), SP.BirthDate, 101) AS BirthDate, CONVERT(VARCHAR(10),SP.AdmissionDate,101) AS DateOfReferral, SP.PlaceOfBirth, SP.Height, SP.Weight, 
+                         SP.PrimaryLanguage, CP.LastName + ',' + CP.FirstName AS ContactName, CP.PrimaryLanguage AS ContactPrimaryLanguage, CP.Occupation,ADL.[City] AS [City], (SELECT LookupName FROM LookUp WHERE LookupType = 'State' AND LookupId = ADL.StateProvince) AS State
 FROM            StudentPersonal AS SP INNER JOIN
                          StudentAddresRel AS SAR ON SP.StudentPersonalId = SAR.StudentPersonalId INNER JOIN
+						 AddressList ADL ON ADL.AddressId=SAR.AddressId INNER JOIN 
                          ContactPersonal AS CP ON CP.ContactPersonalId = SAR.ContactPersonalId INNER JOIN
                          StudentContactRelationship AS SCR ON SCR.ContactPersonalId = SAR.ContactPersonalId INNER JOIN
                          LookUp AS LP ON LP.LookupId = SCR.RelationshipId
 WHERE        (SP.StudentType = 'Referral') AND (SAR.ContactSequence &lt;&gt; 0)
-ORDER BY SP.StudentPersonalId DESC</CommandText>
+ORDER BY SP.AdmissionDate DESC</CommandText>
       </Query>
       <Fields>
         <Field Name="StudentPersonalId">
@@ -56,8 +57,8 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
           <DataField>BirthDate</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="AdmissionDate">
-          <DataField>AdmissionDate</DataField>
+        <Field Name="DateOfReferral">
+          <DataField>DateOfReferral</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="PlaceOfBirth">
@@ -86,6 +87,14 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
         </Field>
         <Field Name="Occupation">
           <DataField>Occupation</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="City">
+          <DataField>City</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="State">
+          <DataField>State</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
@@ -189,7 +198,7 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value>Admission Date</Value>
+                                <Value>Date Of Referral</Value>
                                 <Style>
                                   <FontWeight>Bold</FontWeight>
                                   <Color>White</Color>
@@ -238,6 +247,78 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
                           </Paragraph>
                         </Paragraphs>
                         <rd:DefaultName>Textbox15</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>LightGrey</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>MidnightBlue</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixCornerCell>
+                  <TablixCornerCell>
+                    <CellContents>
+                      <Textbox Name="Textbox1">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>City</Value>
+                                <Style>
+                                  <FontWeight>Bold</FontWeight>
+                                  <Color>White</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style>
+                              <TextAlign>Center</TextAlign>
+                            </Style>
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>Textbox1</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>LightGrey</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>MidnightBlue</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixCornerCell>
+                  <TablixCornerCell>
+                    <CellContents>
+                      <Textbox Name="Textbox5">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>State</Value>
+                                <Style>
+                                  <FontWeight>Bold</FontWeight>
+                                  <Color>White</Color>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style>
+                              <TextAlign>Center</TextAlign>
+                            </Style>
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>Textbox5</rd:DefaultName>
                         <Style>
                           <Border>
                             <Color>LightGrey</Color>
@@ -627,12 +708,34 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
                       <TablixMembers>
                         <TablixMember>
                           <TablixHeader>
-                            <Size>3.01263cm</Size>
+                            <Size>3.35659cm</Size>
                             <CellContents>
                               <Textbox Name="Textbox36">
                                 <CanGrow>true</CanGrow>
                                 <KeepTogether>true</KeepTogether>
                                 <Paragraphs>
+                                  <Paragraph>
+                                    <TextRuns>
+                                      <TextRun>
+                                        <Value />
+                                        <Style>
+                                          <Color>White</Color>
+                                        </Style>
+                                      </TextRun>
+                                    </TextRuns>
+                                    <Style />
+                                  </Paragraph>
+                                  <Paragraph>
+                                    <TextRuns>
+                                      <TextRun>
+                                        <Value />
+                                        <Style>
+                                          <Color>White</Color>
+                                        </Style>
+                                      </TextRun>
+                                    </TextRuns>
+                                    <Style />
+                                  </Paragraph>
                                   <Paragraph>
                                     <TextRuns>
                                       <TextRun>
@@ -703,7 +806,89 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
                                 </CellContents>
                               </TablixHeader>
                               <TablixMembers>
-                                <TablixMember />
+                                <TablixMember>
+                                  <TablixHeader>
+                                    <Size>2.5cm</Size>
+                                    <CellContents>
+                                      <Textbox Name="Textbox9">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value />
+                                                <Style>
+                                                  <Color>White</Color>
+                                                </Style>
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style />
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>Textbox9</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>Solid</Style>
+                                          </Border>
+                                          <TopBorder>
+                                            <Style>None</Style>
+                                          </TopBorder>
+                                          <BackgroundColor>MidnightBlue</BackgroundColor>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixHeader>
+                                  <TablixMembers>
+                                    <TablixMember>
+                                      <TablixHeader>
+                                        <Size>2.5cm</Size>
+                                        <CellContents>
+                                          <Textbox Name="Textbox10">
+                                            <CanGrow>true</CanGrow>
+                                            <KeepTogether>true</KeepTogether>
+                                            <Paragraphs>
+                                              <Paragraph>
+                                                <TextRuns>
+                                                  <TextRun>
+                                                    <Value />
+                                                    <Style>
+                                                      <Color>White</Color>
+                                                    </Style>
+                                                  </TextRun>
+                                                </TextRuns>
+                                                <Style />
+                                              </Paragraph>
+                                            </Paragraphs>
+                                            <rd:DefaultName>Textbox10</rd:DefaultName>
+                                            <Style>
+                                              <Border>
+                                                <Color>LightGrey</Color>
+                                                <Style>Solid</Style>
+                                              </Border>
+                                              <TopBorder>
+                                                <Style>None</Style>
+                                              </TopBorder>
+                                              <BackgroundColor>MidnightBlue</BackgroundColor>
+                                              <PaddingLeft>2pt</PaddingLeft>
+                                              <PaddingRight>2pt</PaddingRight>
+                                              <PaddingTop>2pt</PaddingTop>
+                                              <PaddingBottom>2pt</PaddingBottom>
+                                            </Style>
+                                          </Textbox>
+                                        </CellContents>
+                                      </TablixHeader>
+                                      <TablixMembers>
+                                        <TablixMember />
+                                      </TablixMembers>
+                                    </TablixMember>
+                                  </TablixMembers>
+                                </TablixMember>
                               </TablixMembers>
                             </TablixMember>
                           </TablixMembers>
@@ -711,7 +896,6 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
                       </TablixMembers>
                     </TablixMember>
                   </TablixMembers>
-                  <FixedData>true</FixedData>
                   <KeepWithGroup>After</KeepWithGroup>
                   <RepeatOnNewPage>true</RepeatOnNewPage>
                 </TablixMember>
@@ -790,23 +974,23 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
                           <TablixMembers>
                             <TablixMember>
                               <TablixHeader>
-                                <Size>3.01263cm</Size>
+                                <Size>3.35659cm</Size>
                                 <CellContents>
-                                  <Textbox Name="AdmissionDate">
+                                  <Textbox Name="DateOfReferral">
                                     <CanGrow>true</CanGrow>
                                     <KeepTogether>true</KeepTogether>
                                     <Paragraphs>
                                       <Paragraph>
                                         <TextRuns>
                                           <TextRun>
-                                            <Value>=Fields!AdmissionDate.Value</Value>
+                                            <Value>=Fields!DateOfReferral.Value</Value>
                                             <Style />
                                           </TextRun>
                                         </TextRuns>
                                         <Style />
                                       </Paragraph>
                                     </Paragraphs>
-                                    <rd:DefaultName>AdmissionDate</rd:DefaultName>
+                                    <rd:DefaultName>DateOfReferral</rd:DefaultName>
                                     <Style>
                                       <Border>
                                         <Color>LightGrey</Color>
@@ -854,7 +1038,77 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
                                     </CellContents>
                                   </TablixHeader>
                                   <TablixMembers>
-                                    <TablixMember />
+                                    <TablixMember>
+                                      <TablixHeader>
+                                        <Size>2.5cm</Size>
+                                        <CellContents>
+                                          <Textbox Name="City">
+                                            <CanGrow>true</CanGrow>
+                                            <KeepTogether>true</KeepTogether>
+                                            <Paragraphs>
+                                              <Paragraph>
+                                                <TextRuns>
+                                                  <TextRun>
+                                                    <Value>=Fields!City.Value</Value>
+                                                    <Style />
+                                                  </TextRun>
+                                                </TextRuns>
+                                                <Style />
+                                              </Paragraph>
+                                            </Paragraphs>
+                                            <rd:DefaultName>City</rd:DefaultName>
+                                            <Style>
+                                              <Border>
+                                                <Color>LightGrey</Color>
+                                                <Style>Solid</Style>
+                                              </Border>
+                                              <PaddingLeft>2pt</PaddingLeft>
+                                              <PaddingRight>2pt</PaddingRight>
+                                              <PaddingTop>2pt</PaddingTop>
+                                              <PaddingBottom>2pt</PaddingBottom>
+                                            </Style>
+                                          </Textbox>
+                                        </CellContents>
+                                      </TablixHeader>
+                                      <TablixMembers>
+                                        <TablixMember>
+                                          <TablixHeader>
+                                            <Size>2.5cm</Size>
+                                            <CellContents>
+                                              <Textbox Name="State">
+                                                <CanGrow>true</CanGrow>
+                                                <KeepTogether>true</KeepTogether>
+                                                <Paragraphs>
+                                                  <Paragraph>
+                                                    <TextRuns>
+                                                      <TextRun>
+                                                        <Value>=Fields!State.Value</Value>
+                                                        <Style />
+                                                      </TextRun>
+                                                    </TextRuns>
+                                                    <Style />
+                                                  </Paragraph>
+                                                </Paragraphs>
+                                                <rd:DefaultName>State</rd:DefaultName>
+                                                <Style>
+                                                  <Border>
+                                                    <Color>LightGrey</Color>
+                                                    <Style>Solid</Style>
+                                                  </Border>
+                                                  <PaddingLeft>2pt</PaddingLeft>
+                                                  <PaddingRight>2pt</PaddingRight>
+                                                  <PaddingTop>2pt</PaddingTop>
+                                                  <PaddingBottom>2pt</PaddingBottom>
+                                                </Style>
+                                              </Textbox>
+                                            </CellContents>
+                                          </TablixHeader>
+                                          <TablixMembers>
+                                            <TablixMember />
+                                          </TablixMembers>
+                                        </TablixMember>
+                                      </TablixMembers>
+                                    </TablixMember>
                                   </TablixMembers>
                                 </TablixMember>
                               </TablixMembers>
@@ -874,7 +1128,7 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
             <Top>0.49953cm</Top>
             <Left>0.31433cm</Left>
             <Height>1.8cm</Height>
-            <Width>21.01832cm</Width>
+            <Width>26.36228cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -885,7 +1139,7 @@ ORDER BY SP.StudentPersonalId DESC</CommandText>
         <Height>1.1066in</Height>
         <Style />
       </Body>
-      <Width>8.50794in</Width>
+      <Width>10.5026in</Width>
       <Page>
         <PageHeight>21cm</PageHeight>
         <PageWidth>29.7cm</PageWidth>
