@@ -10,15 +10,21 @@
   </DataSources>
   <DataSets>
     <DataSet Name="ReferralAge">
-      <SharedDataSet>
-        <SharedDataSetReference>ReferralShareDataset</SharedDataSetReference>
+      <Query>
+        <DataSourceName>ReferralAgeActiveDataSource</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@SchoolID">
             <Value>=Parameters!SchoolID.Value</Value>
           </QueryParameter>
         </QueryParameters>
-      </SharedDataSet>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>referralreportProcedure</CommandText>
+      </Query>
       <Fields>
+        <Field Name="StudentType">
+          <DataField>StudentType</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="StudentPersonalId">
           <DataField>StudentPersonalId</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
@@ -27,57 +33,25 @@
           <DataField>LocalId</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="StudentType">
-          <DataField>StudentType</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="studentPersonalName">
           <DataField>studentPersonalName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="SocialSecurityNo">
-          <DataField>SocialSecurityNo</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="ImageUrl">
-          <DataField>ImageUrl</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="contactPersonalName">
           <DataField>contactPersonalName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Gender">
-          <DataField>Gender</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="BirthDate">
-          <DataField>BirthDate</DataField>
-          <rd:TypeName>System.DateTime</rd:TypeName>
-        </Field>
-        <Field Name="PlaceOfBirth">
-          <DataField>PlaceOfBirth</DataField>
+        <Field Name="SocialSecurityNo">
+          <DataField>SocialSecurityNo</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Relation">
           <DataField>Relation</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Height">
-          <DataField>Height</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
-        <Field Name="Age">
-          <DataField>Age</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
         <Field Name="contactAge">
           <DataField>contactAge</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="Weight">
-          <DataField>Weight</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
         <Field Name="Occupation">
           <DataField>Occupation</DataField>
@@ -99,8 +73,20 @@
           <DataField>CauseDeath</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="CITY">
-          <DataField>CITY</DataField>
+        <Field Name="ImageUrl">
+          <DataField>ImageUrl</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Gender">
+          <DataField>Gender</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BirthDate">
+          <DataField>BirthDate</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="DateOfReferral">
+          <DataField>DateOfReferral</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="AddressLine1">
@@ -111,13 +97,37 @@
           <DataField>StreetName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="mMonth">
-          <DataField>mMonth</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
+        <Field Name="City">
+          <DataField>City</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="StateProvince">
           <DataField>StateProvince</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="State">
+          <DataField>State</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="mMonth">
+          <DataField>mMonth</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Age">
+          <DataField>Age</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="PlaceOfBirth">
+          <DataField>PlaceOfBirth</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Height">
+          <DataField>Height</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
+        <Field Name="Weight">
+          <DataField>Weight</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
       </Fields>
       <Filters>
@@ -146,9 +156,6 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>2.78521cm</Width>
-                </TablixColumn>
-                <TablixColumn>
                   <Width>3.69062cm</Width>
                 </TablixColumn>
                 <TablixColumn>
@@ -161,52 +168,19 @@
                   <Width>2.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>3.29375cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>3.18792cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>3.135cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
                   <Height>0.6cm</Height>
                   <TablixCells>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Textbox1">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>Photo</Value>
-                                  <Style>
-                                    <FontWeight>Bold</FontWeight>
-                                    <Color>White</Color>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Textbox1</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
-                              <Style>Solid</Style>
-                            </Border>
-                            <BackgroundColor>MidnightBlue</BackgroundColor>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
                     <TablixCell>
                       <CellContents>
                         <Textbox Name="Textbox2">
@@ -353,14 +327,14 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox21">
+                        <Textbox Name="Textbox1">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Height (ft)</Value>
+                                  <Value>Date Of Referral</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                     <Color>White</Color>
@@ -372,7 +346,7 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox21</rd:DefaultName>
+                          <rd:DefaultName>Textbox1</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -389,14 +363,14 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox23">
+                        <Textbox Name="Textbox4">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Weight (lbs)</Value>
+                                  <Value>City</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                     <Color>White</Color>
@@ -408,7 +382,43 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox23</rd:DefaultName>
+                          <rd:DefaultName>Textbox4</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>MidnightBlue</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox6">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>State</Value>
+                                  <Style>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox6</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -428,22 +438,6 @@
                 <TablixRow>
                   <Height>2.6cm</Height>
                   <TablixCells>
-                    <TablixCell>
-                      <CellContents>
-                        <Image Name="Image1">
-                          <Source>Database</Source>
-                          <Value>=Fields!ImageUrl.Value</Value>
-                          <MIMEType>image/jpeg</MIMEType>
-                          <Sizing>Fit</Sizing>
-                          <Style>
-                            <Border>
-                              <Color>LightGrey</Color>
-                              <Style>Solid</Style>
-                            </Border>
-                          </Style>
-                        </Image>
-                      </CellContents>
-                    </TablixCell>
                     <TablixCell>
                       <CellContents>
                         <Textbox Name="studentPersonalName">
@@ -566,21 +560,21 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Height">
+                        <Textbox Name="DateOfReferral">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Height.Value</Value>
+                                  <Value>=Fields!DateOfReferral.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Height</rd:DefaultName>
+                          <rd:DefaultName>DateOfReferral</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -596,21 +590,51 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Weight">
+                        <Textbox Name="CITY">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Weight.Value</Value>
+                                  <Value>=Fields!City.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Weight</rd:DefaultName>
+                          <rd:DefaultName>CITY</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="State">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!State.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>State</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -661,7 +685,7 @@
             <Top>0.36724cm</Top>
             <Left>0.34204cm</Left>
             <Height>3.2cm</Height>
-            <Width>18.97583cm</Width>
+            <Width>20.80729cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -672,7 +696,7 @@
         <Height>1.51901in</Height>
         <Style />
       </Body>
-      <Width>7.8293in</Width>
+      <Width>8.32651in</Width>
       <Page>
         <PageHeight>21cm</PageHeight>
         <PageWidth>29.7cm</PageWidth>
