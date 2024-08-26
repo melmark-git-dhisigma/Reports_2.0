@@ -983,7 +983,7 @@ Format(CDate(Parameters!ENDDate.Value),"MM/dd/yy")</Value>
                                 <Format>0;(0)</Format>
                               </Style>
                               <ChartAxisTitle>
-                                <Caption>=IIf(Fields!FrqStat.Value=1,"Frequency",IIf(Fields!FrqStat.Value=2,"%Interval","Frequency"))</Caption>
+                                <Caption>=IIf(Fields!FrqStat.Value=1,"Frequency",IIf(Fields!FrqStat.Value=3,"%Opportunities",IIf(Fields!FrqStat.Value=2,"%Interval","Frequency")))</Caption>
                                 <Style>
                                   <FontSize>8pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
@@ -1019,7 +1019,7 @@ IIf(Max(Fields!Frequency.Value)&gt;=20,5,1))))))</Interval>
                               </ChartMinorTickMarks>
                               <CrossAt>NaN</CrossAt>
                               <Minimum>0</Minimum>
-                              <Maximum>=IIf(Fields!FrqStat.Value=1,Max(Fields!Frequency.Value),IIf(Fields!FrqStat.Value=2,100,Max(Fields!Frequency.Value)))</Maximum>
+                              <Maximum>=IIf(Fields!FrqStat.Value=1,Max(Fields!Frequency.Value),IIf(Fields!FrqStat.Value=3,100,IIf(Fields!FrqStat.Value=2,100,Max(Fields!Frequency.Value))))</Maximum>
                               <ChartAxisScaleBreak>
                                 <Style />
                               </ChartAxisScaleBreak>
