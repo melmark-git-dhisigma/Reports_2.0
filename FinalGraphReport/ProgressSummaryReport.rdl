@@ -1103,6 +1103,8 @@ Fields!Score1.Value, "DSScore"), Microsoft.VisualBasic.Constants.VbCrLf)
   <Page>
     <PageHeight>29.7cm</PageHeight>
     <PageWidth>21cm</PageWidth>
+    <InteractiveHeight>0cm</InteractiveHeight>
+    <InteractiveWidth>0cm</InteractiveWidth>
     <LeftMargin>2cm</LeftMargin>
     <RightMargin>2cm</RightMargin>
     <TopMargin>2cm</TopMargin>
@@ -1157,12 +1159,12 @@ SELECT DISTINCT StudentId
 	,DSTempSetColCalcId
 	,ColName
 	,CONVERT(varchar,ReportPeriod.PeriodDate,101) AS PeriodDate
-	<!-- ,(CASE WHEN EXISTS(SELECT DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Approved AND StatusId IN(SELECT  ss  FROM @slpst))  -->
-  <!-- THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Approved AND StatusId IN(SELECT  ss  FROM @slpst))  -->
-<!-- ELSE CASE WHEN EXISTS(SELECT DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Maintenance AND StatusId IN(SELECT  ss  FROM @slpst))  -->
-<!-- THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Maintenance AND StatusId IN(SELECT  ss  FROM @slpst)) -->
-<!-- ELSE CASE WHEN EXISTS(SELECT TOP 1 DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Inactive AND StatusId IN(SELECT  ss  FROM @slpst) ORDER BY DSTempHdr.DSTempHdrId DESC)  -->
-<!-- THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Inactive AND StatusId IN(SELECT  ss  FROM @slpst) ORDER BY DSTempHdr.DSTempHdrId DESC) END END END) AS LessonName -->
+	
+  
+
+
+
+
 	,LessonName
 	,LessonPlanId
 	,CalcType
