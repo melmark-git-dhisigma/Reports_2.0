@@ -1051,7 +1051,7 @@ Format(Parameters!EDate.Value,"MM/dd/yy")</Value>
                                   <CrossAt>NaN</CrossAt>
                                   <Scalar>true</Scalar>
                                   <Minimum>=Parameters!SDate.Value</Minimum>
-                                  <Maximum>=Parameters!EDate.Value</Maximum>
+                                  <Maximum>=DateAdd("d", 1, Parameters!EDate.Value)</Maximum>
                                   <Angle>-90</Angle>
                                   <LabelsAutoFitDisabled>true</LabelsAutoFitDisabled>
                                   <ChartAxisScaleBreak>
@@ -1251,6 +1251,7 @@ Format(Parameters!EDate.Value,"MM/dd/yy")</Value>
                             <BackgroundGradientType>None</BackgroundGradientType>
                           </Style>
                         </Chart>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
