@@ -1665,7 +1665,8 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
             <Value>=Parameters!StudentId.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>SELECT (SELECT StudentLName+', '+StudentFName FROM Student WHERE StudentId=@StudentId)AS StudentName
+        <CommandText>
+			SELECT (SELECT LastName+', '+FirstName FROM StudentPersonal WHERE StudentPersonalId=@StudentId)AS StudentName
 	  ,(SELECT TOP 1 CASE WHEN LessonPlanTypeDay=1 and LessonPlanTypeResi=1 THEN 'Day,Residence' ELSE
 		CASE WHEN LessonPlanTypeDay=1 THEN 'Day' ELSE CASE WHEN LessonPlanTypeResi=1 THEN 'Residence' 
 		END END END ClassType FROM StdtLessonPlan WHERE LessonPlanId=@LessonPlan ORDER BY StdtLessonPlanId DESC) AS ClassType
