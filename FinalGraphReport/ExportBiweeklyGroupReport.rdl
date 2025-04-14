@@ -153,34 +153,35 @@
             <Value>=Parameters!StudentId.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>DECLARE @Approved INT,@Maintenance INT,@Inactive INT
-SELECT 
-	@Approved=CASE WHEN LookupName='Approved' THEN LookupId ELSE @Approved END
-	,@Maintenance=CASE WHEN LookupName='Maintenance' THEN LookupId ELSE @Maintenance END 
-	,@Inactive=CASE WHEN LookupName='Inactive' THEN LookupId ELSE @Inactive END 
-FROM Lookup WHERE LookupType='TemplateStatus' AND LookupName IN('Approved','Maintenance','Inactive')
+        <CommandText>
+			DECLARE @Approved INT,@Maintenance INT,@Inactive INT
+			SELECT
+			@Approved=CASE WHEN LookupName='Approved' THEN LookupId ELSE @Approved END
+			,@Maintenance=CASE WHEN LookupName='Maintenance' THEN LookupId ELSE @Maintenance END
+			,@Inactive=CASE WHEN LookupName='Inactive' THEN LookupId ELSE @Inactive END
+			FROM Lookup WHERE LookupType='TemplateStatus' AND LookupName IN('Approved','Maintenance','Inactive')
 
-DECLARE @LSID TABLE (LSID INT)
-INSERT INTO @LSID(LSID) SELECT * FROM Split(@AllLesson,',') OPTION (MAXRECURSION 500)
-DECLARE @LStat TABLE (LStat INT)
-INSERT INTO @LStat(LStat) SELECT * FROM Split(@LPStatus,',')
+			DECLARE @LSID TABLE (LSID INT)
+			INSERT INTO @LSID(LSID) SELECT * FROM Split(@AllLesson,',') OPTION (MAXRECURSION 500)
+			DECLARE @LStat TABLE (LStat INT)
+			INSERT INTO @LStat(LStat) SELECT * FROM Split(@LPStatus,',')
 
-SELECT *, 
-	(SELECT CASE WHEN EXISTS (SELECT StatusId  FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId AND DH.StatusId=@Approved 
-		AND DH.StatusId IN (SELECT LStat FROM @LStat)) THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId 
-		AND DH.StatusId=@Approved AND DH.StatusId IN (SELECT LStat FROM @LStat)) 
-		ELSE CASE WHEN EXISTS (SELECT StatusId  FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId AND DH.StatusId=@Maintenance 
-		AND DH.StatusId IN (SELECT LStat FROM @LStat)) THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId 
-		AND DH.StatusId=@Maintenance AND DH.StatusId IN (SELECT LStat FROM @LStat)) 
-		ELSE CASE WHEN EXISTS (SELECT TOP 1 StatusId FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId AND DH.StatusId=@Inactive 
-		AND DH.StatusId IN (SELECT LStat FROM @LStat)) THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId 
-		AND DH.StatusId=@Inactive AND DH.StatusId IN (SELECT LStat FROM @LStat)
-		ORDER BY DSTempHdrId DESC) END END END ) AS LessonPlanName 	
-	,(SELECT StudentLname + ', ' + StudentFname  FROM Student WHERE StudentId=@StudentId) StudentName
-	,(SELECT TOP 1 ('Tx: ' + (SELECT LookupName FROM LookUp WHERE LookupId= [TeachingProcId]) + ';' + (SELECT LookupName FROM LookUp WHERE LookupId= [PromptTypeId])) Treatment 
-		FROM DSTempHdr D WHERE D.LessonPlanId=LSN.LessonPlanId AND D.StudentId=@StudentId AND StatusId IN (SELECT LStat FROM @LStat)
-		ORDER BY DSTempHdrId DESC) Treatment
-	,(SELECT TOP 1 'Correct Response: ' + StudCorrRespDef FROM DSTempHdr D WHERE D.LessonPlanId=LSN.LessonPlanId AND D.StudentId=@StudentId AND D.StudCorrRespDef &lt;&gt;'' 
+			SELECT *,
+			(SELECT CASE WHEN EXISTS (SELECT StatusId  FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId AND DH.StatusId=@Approved
+			AND DH.StatusId IN (SELECT LStat FROM @LStat)) THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId
+			AND DH.StatusId=@Approved AND DH.StatusId IN (SELECT LStat FROM @LStat))
+			ELSE CASE WHEN EXISTS (SELECT StatusId  FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId AND DH.StatusId=@Maintenance
+			AND DH.StatusId IN (SELECT LStat FROM @LStat)) THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId
+			AND DH.StatusId=@Maintenance AND DH.StatusId IN (SELECT LStat FROM @LStat))
+			ELSE CASE WHEN EXISTS (SELECT TOP 1 StatusId FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId AND DH.StatusId=@Inactive
+			AND DH.StatusId IN (SELECT LStat FROM @LStat)) THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr DH WHERE DH.StudentId = @StudentId AND DH.LessonPlanId = LSN.LessonPlanId
+			AND DH.StatusId=@Inactive AND DH.StatusId IN (SELECT LStat FROM @LStat)
+			ORDER BY DSTempHdrId DESC) END END END ) AS LessonPlanName
+			,(SELECT LastName + ', ' + FirstName  FROM StudentPersonal WHERE StudentPersonalId=@StudentId) StudentName
+			,(SELECT TOP 1 ('Tx: ' + (SELECT LookupName FROM LookUp WHERE LookupId= [TeachingProcId]) + ';' + (SELECT LookupName FROM LookUp WHERE LookupId= [PromptTypeId])) Treatment
+			FROM DSTempHdr D WHERE D.LessonPlanId=LSN.LessonPlanId AND D.StudentId=@StudentId AND StatusId IN (SELECT LStat FROM @LStat)
+			ORDER BY DSTempHdrId DESC) Treatment
+			,(SELECT TOP 1 'Correct Response: ' + StudCorrRespDef FROM DSTempHdr D WHERE D.LessonPlanId=LSN.LessonPlanId AND D.StudentId=@StudentId AND D.StudCorrRespDef &lt;&gt;'' 
 		AND StatusId IN (SELECT LStat FROM @LStat) ORDER BY DSTempHdrId DESC) Deftn 
 FROM 
 (SELECT D.LessonPlanId FROM DSTempHdr D WHERE D.StudentId=@StudentId AND StatusId IN (SELECT LStat FROM @LStat) AND D.LessonPlanId IN (SELECT LSID FROM @LSID)
