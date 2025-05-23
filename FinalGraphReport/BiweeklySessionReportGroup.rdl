@@ -382,8 +382,9 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
                             </ChartSmartLabel>
                           </ChartSeries>
                           <ChartSeries Name="ArrowNote">
-                            <Hidden>=IIf(InStr(Parameters!Events.Value,"Arrow")&gt;0,False,True)</Hidden>
-                            <ChartDataPoints>
+							  <!--<Hidden>=IIf(InStr(Parameters!Events.Value,"Arrow")&gt;0,False,True)</Hidden>-->
+							  <Hidden>=IIf(InStr(Parameters!Events.Value, "Arrow") &gt;0 AND IsNothing(Fields!EventType.Value), False, True)</Hidden>
+							  <ChartDataPoints>
                               <ChartDataPoint>
                                 <ChartDataPointValues>
                                   <Y>=Fields!Score.Value</Y>
@@ -484,7 +485,7 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
                             <ChartDataPoints>
                               <ChartDataPoint>
                                 <ChartDataPointValues>
-                                  <Y>=IIf((Fields!Score.Value=0 AND Fields!EventType.Value="Arrow notes"),Fields!Score.Value,"")</Y>
+                                  <Y>=IIf((Fields!Score.Value=0 AND (Fields!EventType.Value="Arrow notes" OR Fields!arrowupdate.Value=1)),Fields!Score.Value,"")</Y>
                                 </ChartDataPointValues>
                                 <ChartDataLabel>
                                   <Style>
@@ -499,7 +500,7 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
                                 </Style>
                                 <ChartMarker>
                                   <Type>Auto</Type>
-                                  <Size>6pt</Size>
+                                <Size>6pt</Size>
                                   <Style>
                                     <Border>
                                       <Color>Black</Color>
@@ -584,7 +585,7 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
                             </ChartSmartLabel>
                           </ChartSeries>
                           <ChartSeries Name="ArrowNote1">
-                            <Hidden>=IIf(InStr(Parameters!Events.Value,"Arrow")&gt;0,False,True)</Hidden>
+							  <Hidden>=IIf(InStr(Parameters!Events.Value, "Arrow") &gt;0 AND IsNothing(Fields!EventType.Value), False, True)</Hidden>
                             <ChartDataPoints>
                               <ChartDataPoint>
                                 <ChartDataPointValues>
@@ -1652,6 +1653,10 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
           <DataField>LOrder</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
+		  <Field Name="arrowupdate">
+			  <DataField>arrowupdate</DataField>
+			  <rd:TypeName>System.Int32</rd:TypeName>
+		  </Field>
       </Fields>
     </DataSet>
     <DataSet Name="DataSet1">
@@ -1667,16 +1672,16 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
         </QueryParameters>
         <CommandText>
 			SELECT (SELECT LastName+', '+FirstName FROM StudentPersonal WHERE StudentPersonalId=@StudentId)AS StudentName
-	  ,(SELECT TOP 1 CASE WHEN LessonPlanTypeDay=1 and LessonPlanTypeResi=1 THEN 'Day,Residence' ELSE
-		CASE WHEN LessonPlanTypeDay=1 THEN 'Day' ELSE CASE WHEN LessonPlanTypeResi=1 THEN 'Residence' 
-		END END END ClassType FROM StdtLessonPlan WHERE LessonPlanId=@LessonPlan ORDER BY StdtLessonPlanId DESC) AS ClassType
-	  ,(SELECT TOP 1  ('Tx: ' + (SELECT LookupName FROM LookUp WHERE LookupId= [TeachingProcId]) + ';' + 
-					  (SELECT LookupName FROM LookUp WHERE LookupId= [PromptTypeId])) Treatment 
-		FROM DSTempHdr HDR LEFT JOIN Lookup LK ON HDR.StatusId=LK.LookupId WHERE LessonPlanId=@LessonPlan AND StudentId=@StudentId
-		AND LookupType='TemplateStatus' AND LookupName in('Approved','Maintenance','Inactive')	
-		ORDER BY DSTempHdrId DESC) Treatment 
-	  ,(SELECT TOP 1 'Correct Response: '+StudCorrRespDef FROM DSTempHdr HDR LEFT JOIN Lookup LK ON HDR.StatusId=LK.LookupId 
-		WHERE LessonPlanId=@LessonPlan AND StudentId=@StudentId AND StudCorrRespDef&lt;&gt;'' AND StudCorrRespDef IS NOT NULL AND
+			,(SELECT TOP 1 CASE WHEN LessonPlanTypeDay=1 and LessonPlanTypeResi=1 THEN 'Day,Residence' ELSE
+			CASE WHEN LessonPlanTypeDay=1 THEN 'Day' ELSE CASE WHEN LessonPlanTypeResi=1 THEN 'Residence'
+			END END END ClassType FROM StdtLessonPlan WHERE LessonPlanId=@LessonPlan ORDER BY StdtLessonPlanId DESC) AS ClassType
+			,(SELECT TOP 1  ('Tx: ' + (SELECT LookupName FROM LookUp WHERE LookupId= [TeachingProcId]) + ';' +
+			(SELECT LookupName FROM LookUp WHERE LookupId= [PromptTypeId])) Treatment
+			FROM DSTempHdr HDR LEFT JOIN Lookup LK ON HDR.StatusId=LK.LookupId WHERE LessonPlanId=@LessonPlan AND StudentId=@StudentId
+			AND LookupType='TemplateStatus' AND LookupName in('Approved','Maintenance','Inactive')
+			ORDER BY DSTempHdrId DESC) Treatment
+			,(SELECT TOP 1 'Correct Response: '+StudCorrRespDef FROM DSTempHdr HDR LEFT JOIN Lookup LK ON HDR.StatusId=LK.LookupId
+			WHERE LessonPlanId=@LessonPlan AND StudentId=@StudentId AND StudCorrRespDef&lt;&gt;'' AND StudCorrRespDef IS NOT NULL AND
 		LookupType='TemplateStatus' AND LookupName in('Approved','Maintenance','Inactive')
 		ORDER BY DSTempHdrId DESC) Deftn</CommandText>
       </Query>

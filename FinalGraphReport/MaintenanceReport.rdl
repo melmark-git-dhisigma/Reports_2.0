@@ -366,7 +366,7 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
                             </ChartSmartLabel>
                           </ChartSeries>
                           <ChartSeries Name="ArrowNote">
-                            <Hidden>=IIf(InStr(Parameters!Events.Value,"Arrow")&gt;0,False,True)</Hidden>
+							  <Hidden>=IIf(InStr(Parameters!Events.Value, "Arrow") &gt;0 AND IsNothing(Fields!EventType.Value), False, True)</Hidden>
                             <ChartDataPoints>
                               <ChartDataPoint>
                                 <ChartDataPointValues>
@@ -468,7 +468,7 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
                             <ChartDataPoints>
                               <ChartDataPoint>
                                 <ChartDataPointValues>
-                                  <Y>=IIf((Fields!Score.Value=0 AND Fields!EventType.Value="Arrow notes"),Fields!Score.Value,"")</Y>
+                                  <Y>=IIf((Fields!Score.Value=0 AND (Fields!EventType.Value="Arrow notes" OR Fields!arrowupdate.Value=1)),Fields!Score.Value,"")</Y>
                                 </ChartDataPointValues>
                                 <ChartDataLabel>
                                   <Style>
@@ -568,7 +568,7 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
                             </ChartSmartLabel>
                           </ChartSeries>
                           <ChartSeries Name="ArrowNote1">
-                            <Hidden>=IIf(InStr(Parameters!Events.Value,"Arrow")&gt;0,False,True)</Hidden>
+							  <Hidden>=IIf(InStr(Parameters!Events.Value, "Arrow") &gt;0 AND IsNothing(Fields!EventType.Value), False, True)</Hidden>
                             <ChartDataPoints>
                               <ChartDataPoint>
                                 <ChartDataPointValues>
@@ -1658,6 +1658,10 @@ Format(Parameters!EndDate.Value,"MM/dd/yy")</Value>
           <DataField>CType</DataField>
           <rd:UserDefined>true</rd:UserDefined>
         </Field>
+		  <Field Name="arrowupdate">
+			  <DataField>arrowupdate</DataField>
+			  <rd:TypeName>System.Int32</rd:TypeName>
+		  </Field>
       </Fields>
     </DataSet>
   </DataSets>
