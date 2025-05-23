@@ -23,7 +23,11 @@
         <CommandText>SELECT *,CASE WHEN PreviousValue IS NULL OR PreviousValue='' THEN 'Add' ELSE 'Update' END AS Status FROM (SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,
 CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS 
 PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,ObjectType,EventLogId FROM EventLogs EL 
-JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId WHERE SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
+JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId 
+INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId
+INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department
+WHERE (PLC.EndDate is null or PLC.EndDate &gt;= cast (GETDATE() as DATE)) 
+		  and PLC.Status=1 AND LKP.LookupType = 'Department'  and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
           FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
           WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
           ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId

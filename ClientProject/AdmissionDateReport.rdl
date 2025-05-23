@@ -382,10 +382,13 @@
     <DataSet Name="DSetAdmissionDt">
       <Query>
         <DataSourceName>DSAdmissionDt</DataSourceName>
-        <CommandText>SELECT ClientId,Lastname,Firstname,CONVERT(VARCHAR(20),AdmissionDate,101) AS AdmDate,AdmissionDate FROM StudentPersonal 
-WHERE StudentType='Client' and StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
+        <CommandText>SELECT distinct ClientId,Lastname,Firstname,CONVERT(VARCHAR(20),AdmissionDate,101) AS AdmDate,AdmissionDate FROM StudentPersonal ST
+JOIN Placement PLC on PLC.StudentPersonalId = ST.StudentPersonalId
+INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department
+WHERE StudentType='Client' and (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department'
+and ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
           FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
-          WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
+          WHERE ST.StudentType='Client' and sT.ClientId&gt;0 and ST.StudentPersonalId not in (SELECT Distinct
           ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId
           WHERE (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client')
           and ST.StudentPersonalId not in (SELECT Distinct

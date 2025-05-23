@@ -884,10 +884,12 @@
 CASE WHEN PT.IsWednesday=1 THEN 'Wednesday' ELSE '0' END +','+CASE WHEN PT.IsThursday=1 THEN 'Thursday' ELSE '0' END +','+CASE WHEN PT.IsFriday=1 THEN 'Friday' ELSE '0' END +','+
 CASE WHEN PT.IsSaturday=1 THEN 'Saturday' ELSE '0' END +','+CASE WHEN PT.IsSunday=1 THEN 'Sunday' ELSE '0' END ) IsDays
  FROM Placement PT LEFT JOIN StudentPersonal SP
-ON PT.StudentPersonalId=SP.StudentPersonalId WHERE 
-SP.StudentType='Client'   
+ON PT.StudentPersonalId=SP.StudentPersonalId 
+INNER JOIN LookUp LKP ON LKP.LookupId = PT.Department
+WHERE SP.StudentType='Client'   
 AND SP.ClientId IS NOT NULL  AND CONVERT(INT,SP.ClientId)&gt;0 
 AND PT.Status=1
+AND LKP.LookupType = 'Department'
 --AND CONVERT(DATE,PT.StartDate )&lt;CONVERT(DATE,GETDATE())
 AND (CONVERT(DATE,PT.EndDate)&gt;CONVERT(DATE,GETDATE()) OR PT.EndDate IS NULL) 
 AND PT.PlacementReason IS NOT NULL) PLACE  ORDER BY ClientId</CommandText>

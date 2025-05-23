@@ -27,7 +27,10 @@ ELSE CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Checked' THEN 'Yes' EN
 CASE WHEN ObjectField='Guardian' AND PreviousValue='Checked' AND NewValue='Unchecked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal 
 WHERE ContactPersonalId=ObjectTypeId) END Oldguard,CASE WHEN ObjectField='Guardian' AND PreviousValue='Unchecked' AND NewValue='Checked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal 
 WHERE ContactPersonalId=ObjectTypeId) END Newguard FROM EventLogs EL 
-JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId WHERE ObjectType='Guardianship' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
+JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId 
+INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId
+INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department
+WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
           FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
           WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
           ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId

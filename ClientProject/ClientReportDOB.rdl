@@ -40,7 +40,9 @@
 FROM            StudentPersonal AS SD LEFT OUTER JOIN
                          Placement AS PL ON PL.StudentPersonalId = SD.StudentPersonalId LEFT OUTER JOIN
                          EmergencyContactSchool AS EC ON EC.StudentPersonalId = SD.StudentPersonalId
-WHERE        (SD.StudentType = 'Client ') and SD.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
+                         INNER JOIN LookUp LKP on LKP.LookupId = PL.Department
+WHERE        (SD.StudentType = 'Client ')  and (PL.EndDate is null or PL.EndDate &gt;= cast (GETDATE() as DATE)) and PL.Status=1 AND LKP.LookupType = 'Department'
+          and SD.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
           FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
           WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
           ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId

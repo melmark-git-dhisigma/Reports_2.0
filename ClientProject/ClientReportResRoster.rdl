@@ -662,8 +662,9 @@
 		,(SELECT LookupName FROM LookUp WHERE LookupId=PL.Department) AS Department
 		,(SELECT LookupName FROM LookUp WHERE LookupId=PL.BehaviorAnalyst) AS BehaviorAnalyst
 		FROM StudentPersonal SP LEFT JOIN [dbo].[Placement] PL ON SP.StudentPersonalId=PL.StudentPersonalId 
+    INNER JOIN LookUp LKP ON LKP.LookupId = PL.Department
 		LEFT JOIN (SELECT * FROM LookUp WHERE LookupName='Residential School') LP ON LP.LookupId=PL.PlacementType		
-		 WHERE SP.StudentType='Client' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
+		 WHERE SP.StudentType='Client' and (PL.EndDate is null or PL.EndDate &gt;= cast (GETDATE() as DATE)) and PL.Status=1 AND LKP.LookupType = 'Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
           FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
           WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
           ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId
