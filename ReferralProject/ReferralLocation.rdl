@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:am="http://schemas.microsoft.com/sqlserver/reporting/authoringmetadata">
+  <am:AuthoringMetadata>
+    <am:CreatedBy>
+      <am:Name>SSDTRS</am:Name>
+      <am:Version>17.12.35707.178</am:Version>
+    </am:CreatedBy>
+    <am:UpdatedBy>
+      <am:Name>SSDTRS</am:Name>
+      <am:Version>17.12.35707.178</am:Version>
+    </am:UpdatedBy>
+    <am:LastModifiedTimestamp>2025-05-29T12:07:07.1601628Z</am:LastModifiedTimestamp>
+  </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="ReferralLocation">
@@ -131,13 +142,6 @@
         </Field>
       </Fields>
       <Filters>
-        <Filter>
-          <FilterExpression>=Fields!City.Value</FilterExpression>
-          <Operator>Like</Operator>
-          <FilterValues>
-            <FilterValue>=Parameters!City.Value</FilterValue>
-          </FilterValues>
-        </Filter>
         <Filter>
           <FilterExpression>=Fields!StateProvince.Value</FilterExpression>
           <Operator>Equal</Operator>
@@ -628,6 +632,17 @@
             <RepeatRowHeaders>true</RepeatRowHeaders>
             <NoRowsMessage>No Data Available</NoRowsMessage>
             <DataSetName>ReferralLocationDataset</DataSetName>
+            <Filters>
+				<Filter>
+					<FilterExpression>=IIf(Parameters!City.Value = "" OR IsNothing(Parameters!City.Value), "*", Fields!City.Value)</FilterExpression>
+					<Operator>Like</Operator>
+					<FilterValues>
+						<FilterValue>= "*" &amp; Parameters!City.Value &amp; "*"</FilterValue>
+					</FilterValues>
+				</Filter>
+
+
+			</Filters>
             <Top>0.34078cm</Top>
             <Left>0.44662cm</Left>
             <Height>1.2cm</Height>
@@ -666,9 +681,39 @@
     </ReportParameter>
     <ReportParameter Name="City">
       <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>""</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
       <Prompt>City</Prompt>
     </ReportParameter>
   </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfRows>2</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>SchoolID</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>State</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>City</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
   <rd:ReportID>bfb1b0ed-eb8e-4998-af47-864d5dc3e4de</rd:ReportID>
 </Report>
