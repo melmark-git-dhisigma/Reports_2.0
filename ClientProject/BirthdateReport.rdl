@@ -457,10 +457,14 @@
       <Query>
         <DataSourceName>DSBirthdate</DataSourceName>
         <CommandText>
-SELECT ClientId,Lastname,Firstname ,CONVERT(VARCHAR(20),BirthDate,101) AS BirthDate,BirthDate AS BDate
+SELECT distinct ClientId,Lastname,Firstname ,CONVERT(VARCHAR(20),BirthDate,101) AS BirthDate,BirthDate AS BDate
 ,DATEDIFF(YEAR,BirthDate,GETDATE())-(CASE WHEN DATEADD(YY,DATEDIFF(YEAR,BirthDate,GETDATE()),BirthDate) &gt; GETDATE() THEN 1
-		ELSE 0 END) AS Age, DATENAME(month,BirthDate) Month FROM StudentPersonal 
-WHERE StudentType='Client' and StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
+		ELSE 0 END) AS Age, DATENAME(month,BirthDate) Month FROM StudentPersonal ST 
+		JOIN Placement PLC ON PLC.StudentPersonalId = ST.StudentPersonalId
+          INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department
+          WHERE StudentType='Client' and (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 and
+          LKP.LookupType = 'Department' AND
+          ST.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
           FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
           WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
           ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId

@@ -868,12 +868,12 @@
 				   (SELECT LookupName FROM LookUp WHERE LookupId=RaceId) RaceName FROM (SELECT SL.StudentPersonalId,CASE WHEN SL.Gender=1 THEN 'Male' ELSE 'Female' END Gender,PT.Location,(SELECT MaxStudents FROM Class 
 WHERE ClassId=PT.Location) MaxStudents,PT.Department AS Pgm,PT.PlacementType,PT.PlacementDepartment AS Departmt,SL.RaceId
   FROM Placement PT INNER JOIN
- StudentPersonal SL ON PT.StudentPersonalId=SL.StudentPersonalId WHERE PT.Status=1 AND SL.StudentType='Client' 
+ StudentPersonal SL ON PT.StudentPersonalId=SL.StudentPersonalId INNER JOIN LookUp LKP ON LKP.LookupId = PT.Department WHERE PT.Status=1 AND SL.StudentType='Client' and (PT.EndDate is null or PT.EndDate &gt;= cast (GETDATE() as DATE)) and PT.Status=1 
  and SL.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
           FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
           WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
           ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId
-          WHERE (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client')
+          WHERE (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client')
           and ST.StudentPersonalId not in (SELECT Distinct
           ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND CONVERT(INT,SL.ClientId)&gt;0) SLPT 
  WHERE Location IS NOT NULL

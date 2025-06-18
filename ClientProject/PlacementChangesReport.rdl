@@ -27,7 +27,8 @@ JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId WHERE Objec
           FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
           WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
           ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId
-          WHERE (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client')
+          INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department
+          WHERE (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and ST.StudentType='Client')
           and ST.StudentPersonalId not in (SELECT Distinct
           ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client')) AND EventDate&gt;=@StartDate AND EventDate&lt;=@EndDate ORDER BY EventLogId DESC</CommandText>
       </Query>
