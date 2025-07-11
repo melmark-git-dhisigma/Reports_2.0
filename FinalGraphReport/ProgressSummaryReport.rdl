@@ -1159,12 +1159,12 @@ SELECT DISTINCT StudentId
 	,DSTempSetColCalcId
 	,ColName
 	,CONVERT(varchar,ReportPeriod.PeriodDate,101) AS PeriodDate
-	
-  
-
-
-
-
+	<!-- ,(CASE WHEN EXISTS(SELECT DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Approved AND StatusId IN(SELECT  ss  FROM @slpst))  -->
+  <!-- THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Approved AND StatusId IN(SELECT  ss  FROM @slpst))  -->
+<!-- ELSE CASE WHEN EXISTS(SELECT DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Maintenance AND StatusId IN(SELECT  ss  FROM @slpst))  -->
+<!-- THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Maintenance AND StatusId IN(SELECT  ss  FROM @slpst)) -->
+<!-- ELSE CASE WHEN EXISTS(SELECT TOP 1 DSTempHdrId FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Inactive AND StatusId IN(SELECT  ss  FROM @slpst) ORDER BY DSTempHdr.DSTempHdrId DESC)  -->
+<!-- THEN (SELECT TOP 1 DSTemplateName FROM DSTempHdr WHERE LessonPlanId=StdCalcs.LessonPlanId AND StudentId=@StudentId AND StatusId=@Inactive AND StatusId IN(SELECT  ss  FROM @slpst) ORDER BY DSTempHdr.DSTempHdrId DESC) END END END) AS LessonName -->
 	,LessonName
 	,LessonPlanId
 	,CalcType
@@ -1291,17 +1291,17 @@ SELECT EndTs as time1,
 	DS.SetCd AS CurrentSet,
 	LU.LookupName AS CurrentPrompt,
 	(SELECT STUFF((SELECT ','+CONVERT(NVARCHAR(MAX), EventName)  FROM (SELECT [EventName]  FROM StdtSessEvent WHERE LessonPlanId=SH.LessonPlanId AND SH.SessionNbr=SessionNbr 
-		AND @StartDate &lt;= CONVERT(DATE,EvntTs) AND CONVERT(DATE,EvntTs) &lt;= @EndDate AND EventType='EV' AND StdtSessEventType IN ('Major','Minor','Arrow notes') ) EventName FOR XML PATH('')),1,1,'')) 
+		AND @StartDate &lt;= CONVERT(DATE,EvntTs) AND CONVERT(DATE,EvntTs) &lt;= @EndDate AND discardstatus is NULL AND EventType='EV' AND StdtSessEventType IN ('Major','Minor','Arrow notes') ) EventName FOR XML PATH('')),1,1,'')) 
 		AS EventName,
-	CASE WHEN (SELECT COUNT(*) FROM StdtSessEvent where StdtSessEventType='Major' and SessionNbr=SH.SessionNbr AND LessonPlanId=SH.LessonPlanId ) &gt;0 
+	CASE WHEN (SELECT COUNT(*) FROM StdtSessEvent where StdtSessEventType='Major' and SessionNbr=SH.SessionNbr AND LessonPlanId=SH.LessonPlanId AND discardstatus is NULL ) &gt;0 
 		THEN 'Major' 
-	ELSE CASE WHEN (SELECT COUNT(*) FROM StdtSessEvent where StdtSessEventType='Minor' and SessionNbr=SH.SessionNbr AND LessonPlanId=SH.LessonPlanId )&gt;0 
+	ELSE CASE WHEN (SELECT COUNT(*) FROM StdtSessEvent where StdtSessEventType='Minor' and SessionNbr=SH.SessionNbr AND LessonPlanId=SH.LessonPlanId AND discardstatus is NULL )&gt;0 
 		THEN 'Minor' END END AS StdtSessEventType
 		,(SELECT CONCAT(UserFname,', '+UserLName) from [User] where userid = SH.ModifiedBy) as UserName
 FROM StdtSessionHdr SH LEFT JOIN DSTempSet DS ON DS.DSTempSetId = SH.CurrentSetId	
 	RIGHT JOIN StdtSessEvent SE ON SE.DSTempHdrId=SH.DSTempHdrId
 	LEFT JOIN LookUp LU ON LU.LookupId=SH.CurrentPromptId
-WHERE SessionStatusCd='S' AND IOAInd='N' AND  SH.StudentId=@StudentId AND @StartDate &lt;= CONVERT(DATE,EndTs) AND CONVERT(DATE,EndTs) &lt;= @EndDate 	
+WHERE SessionStatusCd='S' AND IOAInd='N' AND  SH.StudentId=@StudentId AND SE.discardstatus is NULL AND @StartDate &lt;= CONVERT(DATE,EndTs) AND CONVERT(DATE,EndTs) &lt;= @EndDate 	
 	AND SH.LessonPlanId IN (select lsid from @lsid)
 GROUP BY SH.LessonPlanId,SH.SessionNbr,SetCd,LU.LookupName,EndTs,SH.ModifiedBy
 UNION ALL
@@ -1331,7 +1331,7 @@ SELECT EvntTs as time1,
 	StdtSessEventType,
 	NULL
 FROM [dbo].[StdtSessEvent] 
-WHERE StudentId=@StudentId  AND @StartDate &lt;= CONVERT(DATE,EvntTs) AND CONVERT(DATE,EvntTs) &lt;= @EndDate AND EventType='EV' AND SessionNbr IS NULL
+WHERE StudentId=@StudentId AND discardstatus is NULL AND @StartDate &lt;= CONVERT(DATE,EvntTs) AND CONVERT(DATE,EvntTs) &lt;= @EndDate AND EventType='EV' AND SessionNbr IS NULL
 	AND StdtSessEventType IN ('Major','Minor','Arrow notes') AND LessonPlanId IN (select lsid from @lsid)
 ORDER BY time1,LessonPlanId</CommandText>
       </Query>
@@ -1403,7 +1403,7 @@ SELECT 	ClassId,
 	'1' AS IsLP,
 	'1' AS IncludeInGraph 
 FROM [dbo].[StdtSessEvent] 
-WHERE StudentId=@StudentId  AND @StartDate &lt;= CONVERT(DATE,EvntTs) AND CONVERT(DATE,EvntTs) &lt;= @EndDate AND EventType='EV' AND SessionNbr IS NULL AND DSTempHdrId IS NULL
+WHERE StudentId=@StudentId AND discardstatus is NULL AND @StartDate &lt;= CONVERT(DATE,EvntTs) AND CONVERT(DATE,EvntTs) &lt;= @EndDate AND EventType='EV' AND SessionNbr IS NULL AND DSTempHdrId IS NULL
 	AND StdtSessEventType IN ('Major','Minor','Arrow notes') AND LessonPlanId IN (select lsid from @lsid) 
 ORDER BY EvntTs,LessonPlanId</CommandText>
       </Query>
@@ -1493,7 +1493,7 @@ SELECT        SE.ClassId, DC.DSTempSetColCalcId, DSC.ColName AS Colname, SE.Evnt
 FROM            DSTempSetCol AS DSC INNER JOIN
                          StdtSessEvent AS SE ON DSC.DSTempHdrId = SE.DSTempHdrId INNER JOIN
                          DSTempSetColCalc AS DC ON DSC.DSTempSetColId = DC.DSTempSetColId
-WHERE        (SE.StudentId = @StudentId) AND (@StartDate &lt;= CONVERT(DATE, SE.EvntTs)) AND (CONVERT(DATE, SE.EvntTs) &lt;= @EndDate) AND (SE.EventType = 'EV') AND 
+WHERE        (SE.StudentId = @StudentId) AND discardstatus is NULL AND (@StartDate &lt;= CONVERT(DATE, SE.EvntTs)) AND (CONVERT(DATE, SE.EvntTs) &lt;= @EndDate) AND (SE.EventType = 'EV') AND 
                          (SE.SessionNbr IS NULL)</CommandText>
       </Query>
       <Fields>
@@ -1566,7 +1566,7 @@ WHERE        (SE.StudentId = @StudentId) AND (@StartDate &lt;= CONVERT(DATE, SE.
 	EventName,
 	StdtSessEventType 
 FROM [dbo].[StdtSessEvent] 
-WHERE StudentId=@StudentId  AND @StartDate &lt;= CONVERT(DATE,EvntTs) AND CONVERT(DATE,EvntTs) &lt;= @EndDate AND EventType='EV' 
+WHERE StudentId=@StudentId AND discardstatus is NULL AND @StartDate &lt;= CONVERT(DATE,EvntTs) AND CONVERT(DATE,EvntTs) &lt;= @EndDate AND EventType='EV' 
 	AND StdtSessEventType IN ('Major','Minor','Arrow notes') AND LessonPlanId =0
 order by SessPeriodDate</CommandText>
       </Query>
@@ -1632,7 +1632,7 @@ order by SessPeriodDate</CommandText>
 	'1' AS IsLP,
 	'1' AS IncludeInGraph 	
 FROM StdtSessEvent 
-WHERE StudentId=@StudentId  AND @StartDate &lt;= CONVERT(DATE,EvntTs) AND CONVERT(DATE,EvntTs) &lt;= @EndDate AND EventType='EV' 
+WHERE StudentId=@StudentId AND discardstatus is NULL AND @StartDate &lt;= CONVERT(DATE,EvntTs) AND CONVERT(DATE,EvntTs) &lt;= @EndDate AND EventType='EV' 
 AND StdtSessEventType IN ('Major','Minor','Arrow notes')  AND LessonPlanId =0
 ORDER BY EvntTs,LessonPlanId</CommandText>
       </Query>
