@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>17.12.35707.178</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2025-05-28T12:54:06.9271384Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-01-02T10:33:08.5296724Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -48,40 +48,8 @@
           <DataField>studentPersonalName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="contactPersonalName">
-          <DataField>contactPersonalName</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="SocialSecurityNo">
           <DataField>SocialSecurityNo</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Relation">
-          <DataField>Relation</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="contactAge">
-          <DataField>contactAge</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="Occupation">
-          <DataField>Occupation</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Spouse">
-          <DataField>Spouse</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="contactGender">
-          <DataField>contactGender</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="MaritalStatus">
-          <DataField>MaritalStatus</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
-        <Field Name="CauseDeath">
-          <DataField>CauseDeath</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="ImageUrl">
@@ -144,9 +112,9 @@
       <Filters>
         <Filter>
           <FilterExpression>=Fields!mMonth.Value</FilterExpression>
-          <Operator>Equal</Operator>
+          <Operator>In</Operator>
           <FilterValues>
-            <FilterValue>=CInt(Parameters!Quarter.Value)</FilterValue>
+            <FilterValue>=Parameters!Quarter.Value</FilterValue>
           </FilterValues>
         </Filter>
       </Filters>
@@ -734,8 +702,9 @@
       <Prompt>SchoolID</Prompt>
     </ReportParameter>
     <ReportParameter Name="Quarter">
-      <DataType>String</DataType>
+      <DataType>Integer</DataType>
       <Prompt>Quarter</Prompt>
+      <MultiValue>true</MultiValue>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>

@@ -143,10 +143,12 @@
       </Fields>
       <Filters>
         <Filter>
-          <FilterExpression>=Fields!StateProvince.Value</FilterExpression>
-          <Operator>Equal</Operator>
+			<FilterExpression>
+				=Parameters!State.Value = "0" OR Fields!StateProvince.Value = Parameters!State.Value
+			</FilterExpression>
+			  <Operator>Equal</Operator>
           <FilterValues>
-            <FilterValue>=CInt(Parameters!State.Value)</FilterValue>
+            <FilterValue>=True</FilterValue>
           </FilterValues>
         </Filter>
       </Filters>
@@ -634,10 +636,14 @@
             <DataSetName>ReferralLocationDataset</DataSetName>
             <Filters>
 				<Filter>
-					<FilterExpression>=IIf(Parameters!City.Value = "" OR IsNothing(Parameters!City.Value), "*", Fields!City.Value)</FilterExpression>
-					<Operator>Like</Operator>
+					<FilterExpression>
+						=Parameters!City.Value = ""
+						OR IsNothing(Fields!City.Value)
+						OR InStr(Fields!City.Value, Parameters!City.Value) > 0
+					</FilterExpression>
+					<Operator>Equal</Operator>
 					<FilterValues>
-						<FilterValue>= "*" &amp; Parameters!City.Value &amp; "*"</FilterValue>
+						<FilterValue>=True</FilterValue>
 					</FilterValues>
 				</Filter>
 
@@ -676,7 +682,9 @@
       <Prompt>SchoolID</Prompt>
     </ReportParameter>
     <ReportParameter Name="State">
-      <DataType>String</DataType>
+      <DataType>Integer</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
       <Prompt>State</Prompt>
     </ReportParameter>
     <ReportParameter Name="City">
