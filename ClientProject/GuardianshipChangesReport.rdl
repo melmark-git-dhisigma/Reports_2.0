@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:am="http://schemas.microsoft.com/sqlserver/reporting/authoringmetadata">
+  <am:AuthoringMetadata>
+    <am:CreatedBy>
+      <am:Name>SSDTRS</am:Name>
+      <am:Version>17.12.35707.178</am:Version>
+    </am:CreatedBy>
+    <am:UpdatedBy>
+      <am:Name>SSDTRS</am:Name>
+      <am:Version>17.12.35707.178</am:Version>
+    </am:UpdatedBy>
+    <am:LastModifiedTimestamp>2026-03-12T11:13:24.8058074Z</am:LastModifiedTimestamp>
+  </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="DSGuardChanes">
@@ -20,23 +31,98 @@
             <Value>=Parameters!EndDate.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,
-CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS 
-PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Unchecked' THEN 'No' 
-ELSE CASE WHEN ObjectField='Guardian(Self)' AND NewValue='Checked' THEN 'Yes' END END Selfguard,
-CASE WHEN ObjectField='Guardian' AND PreviousValue='Checked' AND NewValue='Unchecked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal 
-WHERE ContactPersonalId=ObjectTypeId) END Oldguard,CASE WHEN ObjectField='Guardian' AND PreviousValue='Unchecked' AND NewValue='Checked' THEN (SELECT LastName+','+FirstName FROM ContactPersonal 
-WHERE ContactPersonalId=ObjectTypeId) END Newguard FROM EventLogs EL 
-JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId 
-INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId
-INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department
-WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 AND LKP.LookupType = 'Department' and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
-          FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
-          WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
-          ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId
-          WHERE (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client')
-          and ST.StudentPersonalId not in (SELECT Distinct
-          ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client'))  AND EventDate&gt;=@StartDate AND EventDate&lt;=@EndDate ORDER BY EventLogId DESC</CommandText>
+        <CommandText>SELECT 
+    SP.ClientId,
+    SP.LastName + ',' + SP.FirstName AS ClientName,
+    ObjectField,
+
+    CASE 
+        WHEN PreviousValue LIKE '--%Select%--' THEN NULL 
+        ELSE PreviousValue 
+    END AS PreviousValue,
+
+    NewValue,
+    FORMAT(EventDate,'MM/dd/yyyy') AS EventDate,
+
+    CASE 
+        WHEN ObjectField = 'Guardian(Self)' AND NewValue = 'Unchecked' THEN 'No'
+        WHEN ObjectField = 'Guardian(Self)' AND NewValue = 'Checked' THEN 'Yes'
+    END AS Selfguard,
+
+    CASE 
+        WHEN ObjectField = 'Guardian' 
+             AND PreviousValue = 'Checked' 
+             AND NewValue = 'Unchecked'
+        THEN (
+            SELECT LastName + ',' + FirstName 
+            FROM ContactPersonal 
+            WHERE ContactPersonalId = ObjectTypeId
+        )
+    END AS Oldguard,
+
+    CASE 
+        WHEN ObjectField = 'Guardian' 
+             AND PreviousValue = 'Unchecked' 
+             AND NewValue = 'Checked'
+        THEN (
+            SELECT LastName + ',' + FirstName 
+            FROM ContactPersonal 
+            WHERE ContactPersonalId = ObjectTypeId
+        )
+    END AS Newguard
+
+FROM EventLogs EL
+
+JOIN StudentPersonal SP 
+    ON EL.StudentPersonalId = SP.StudentPersonalId
+
+OUTER APPLY (
+    SELECT TOP 1 *
+    FROM Placement PLC
+    WHERE PLC.StudentPersonalId = SP.StudentPersonalId
+        AND (PLC.EndDate IS NULL OR PLC.EndDate &gt;= CAST(GETDATE() AS DATE))
+        AND PLC.Status = 1
+    ORDER BY PLC.StartDate DESC
+) PLC
+
+INNER JOIN LookUp LKP 
+    ON LKP.LookupId = PLC.Department
+
+WHERE ObjectType = 'Guardianship'
+    AND (PLC.EndDate IS NULL OR PLC.EndDate &gt;= CAST(GETDATE() AS DATE))
+    AND PLC.Status = 1
+    AND LKP.LookupType = 'Department'
+    AND SP.ClientId &gt; 0
+    AND SP.StudentPersonalId NOT IN (
+        SELECT DISTINCT ST.StudentPersonalId
+        FROM StudentPersonal ST
+        JOIN ContactPersonal CP 
+            ON CP.StudentPersonalId = ST.StudentPersonalId
+        WHERE ST.StudentType = 'Client'
+            AND CONVERT(INT, ST.ClientId) &gt; 0
+            AND ST.StudentPersonalId NOT IN (
+                SELECT DISTINCT ST.StudentPersonalId
+                FROM StudentPersonal ST
+                JOIN Placement PLC 
+                    ON PLC.StudentPersonalId = ST.StudentPersonalId
+                WHERE (PLC.EndDate IS NULL OR PLC.EndDate &gt;= CAST(GETDATE() AS DATE))
+                    AND PLC.Status = 1
+                    AND ST.StudentType = 'Client'
+                    AND CONVERT(INT, ST.ClientId) &gt; 0
+            )
+            AND ST.StudentPersonalId NOT IN (
+                SELECT DISTINCT ST.StudentPersonalId
+                FROM StudentPersonal ST
+                WHERE ST.PlacementStatus = 'D'
+                    AND ST.StudentType = 'Client'
+                    AND CONVERT(INT, ST.ClientId) &gt; 0
+            )
+    )
+
+    AND CONVERT(DATE, EventDate) &gt;= @StartDate
+    AND CONVERT(DATE, EventDate) &lt;= @EndDate
+
+ORDER BY EventLogId DESC;</CommandText>
       </Query>
       <Fields>
         <Field Name="ClientId">
@@ -563,6 +649,24 @@ WHERE ObjectType='Guardianship' and (PLC.EndDate is null or PLC.EndDate &gt;= ca
       <Prompt>EndDate</Prompt>
     </ReportParameter>
   </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfRows>1</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>StartDate</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>EndDate</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
   <rd:ReportID>3642c8c6-796c-4937-85d9-583c2fc19426</rd:ReportID>
 </Report>
