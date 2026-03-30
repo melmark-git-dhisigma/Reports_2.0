@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:am="http://schemas.microsoft.com/sqlserver/reporting/authoringmetadata">
+  <am:AuthoringMetadata>
+    <am:CreatedBy>
+      <am:Name>SSDTRS</am:Name>
+      <am:Version>17.12.35707.178</am:Version>
+    </am:CreatedBy>
+    <am:UpdatedBy>
+      <am:Name>SSDTRS</am:Name>
+      <am:Version>17.12.35707.178</am:Version>
+    </am:UpdatedBy>
+    <am:LastModifiedTimestamp>2026-03-12T11:19:28.0015664Z</am:LastModifiedTimestamp>
+  </am:AuthoringMetadata>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="DSFundChanges">
@@ -20,20 +31,86 @@
             <Value>=Parameters!EndDate.Value</Value>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>SELECT *,CASE WHEN PreviousValue IS NULL OR PreviousValue='' THEN 'Add' ELSE 'Update' END AS Status FROM (SELECT SP.ClientId,SP.LastName+','+SP.FirstName AS ClientName,ObjectField,
-CASE WHEN PreviousValue LIKE '--%'+'Select'+'%--' THEN NULL ELSE PreviousValue END AS 
-PreviousValue,NewValue,FORMAT(EventDate,'MM/dd/yyyy') EventDate,ObjectType,EventLogId FROM EventLogs EL 
-JOIN StudentPersonal SP ON EL.StudentPersonalId=SP.StudentPersonalId 
-INNER JOIN Placement PLC ON PLC.StudentPersonalId = SP.StudentPersonalId
-INNER JOIN LookUp LKP ON LKP.LookupId = PLC.Department
-WHERE (PLC.EndDate is null or PLC.EndDate &gt;= cast (GETDATE() as DATE)) 
-		  and PLC.Status=1 AND LKP.LookupType = 'Department'  and SP.StudentPersonalId not in (SELECT Distinct ST.StudentPersonalId
-          FROM StudentPersonal ST join ContactPersonal cp on cp.StudentPersonalId=ST.StudentPersonalId
-          WHERE ST.StudentType='Client' and sT.ClientId>0 and ST.StudentPersonalId not in (SELECT Distinct
-          ST.StudentPersonalId FROM StudentPersonal ST join Placement PLC on PLC.StudentPersonalId=ST.StudentPersonalId
-          WHERE (PLC.EndDate is null or plc.EndDate &gt;= cast (GETDATE() as DATE)) and PLC.Status=1 and ST.StudentType='Client')
-          and ST.StudentPersonalId not in (SELECT Distinct
-          ST.StudentPersonalId FROM StudentPersonal ST WHERE ST.PlacementStatus='D' and ST.StudentType='Client'))) FUND WHERE ObjectType='Funder'  AND EventDate&gt;=@StartDate AND EventDate&lt;=@EndDate ORDER BY EventLogId DESC</CommandText>
+        <CommandText>SELECT *,
+       CASE 
+            WHEN PreviousValue IS NULL OR PreviousValue = '' THEN 'Add'
+            ELSE 'Update'
+       END AS Status
+FROM
+(
+    SELECT 
+        SP.ClientId,
+        SP.LastName + ',' + SP.FirstName AS ClientName,
+        ObjectField,
+
+        CASE 
+            WHEN PreviousValue LIKE '--%Select%--' THEN NULL 
+            ELSE PreviousValue 
+        END AS PreviousValue,
+
+        NewValue,
+        FORMAT(EventDate,'MM/dd/yyyy') AS EventDate,
+        ObjectType,
+        EventLogId
+
+    FROM EventLogs EL
+
+    JOIN StudentPersonal SP 
+        ON EL.StudentPersonalId = SP.StudentPersonalId
+
+    OUTER APPLY
+    (
+        SELECT TOP 1 PLC.*
+        FROM Placement PLC
+        WHERE PLC.StudentPersonalId = SP.StudentPersonalId
+            AND (PLC.EndDate IS NULL OR PLC.EndDate &gt;= CAST(GETDATE() AS DATE))
+            AND PLC.Status = 1
+        ORDER BY PLC.StartDate DESC
+    ) PLC
+
+    INNER JOIN LookUp LKP 
+        ON LKP.LookupId = PLC.Department
+
+    WHERE LKP.LookupType = 'Department'
+        AND SP.ClientId &gt; 0
+
+        AND SP.StudentPersonalId NOT IN
+        (
+            SELECT DISTINCT ST.StudentPersonalId
+            FROM StudentPersonal ST
+            JOIN ContactPersonal CP 
+                ON CP.StudentPersonalId = ST.StudentPersonalId
+            WHERE ST.StudentType = 'Client'
+                AND CONVERT(INT, ST.ClientId) &gt; 0
+
+                AND ST.StudentPersonalId NOT IN
+                (
+                    SELECT DISTINCT ST.StudentPersonalId
+                    FROM StudentPersonal ST
+                    JOIN Placement PLC 
+                        ON PLC.StudentPersonalId = ST.StudentPersonalId
+                    WHERE (PLC.EndDate IS NULL OR PLC.EndDate &gt;= CAST(GETDATE() AS DATE))
+                        AND PLC.Status = 1
+                        AND ST.StudentType = 'Client'
+                        AND CONVERT(INT, ST.ClientId) &gt; 0
+                )
+
+                AND ST.StudentPersonalId NOT IN
+                (
+                    SELECT DISTINCT ST.StudentPersonalId
+                    FROM StudentPersonal ST
+                    WHERE ST.PlacementStatus = 'D'
+                        AND ST.StudentType = 'Client'
+                        AND CONVERT(INT, ST.ClientId) &gt; 0
+                )
+        )
+) FUND
+
+WHERE ObjectType = 'Funder'
+    AND CONVERT(DATE, EventDate) &gt;= @StartDate
+    AND CONVERT(DATE, EventDate) &lt;= @EndDate
+
+ORDER BY EventLogId DESC;</CommandText>
       </Query>
       <Fields>
         <Field Name="ClientId">
@@ -628,6 +705,24 @@ WHERE (PLC.EndDate is null or PLC.EndDate &gt;= cast (GETDATE() as DATE))
       <Prompt>End Date</Prompt>
     </ReportParameter>
   </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>2</NumberOfColumns>
+      <NumberOfRows>1</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>StartDate</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>EndDate</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
   <rd:ReportID>6c94d0ff-c5b1-4616-804c-c780f6cbdd37</rd:ReportID>
 </Report>
